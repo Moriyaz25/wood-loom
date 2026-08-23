@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { verifySessionToken, SESSION_COOKIE_NAME } from "@/lib/session";
+export async function proxy(request) { const { pathname, search } = request.nextUrl; const token = request.cookies.get(SESSION_COOKIE_NAME)?.value; const session = token ? await verifySessionToken(token) : null; if (pathname.startsWith("/admin") && pathname !== "/admin/login" && (!session || !["ADMIN", "STAFF"].includes(session.role))) return NextResponse.redirect(new URL("/admin/login", request.url)); if ((pathname.startsWith("/account") || pathname === "/checkout") && !session) { const url = new URL("/login", request.url); url.searchParams.set("next", `${pathname}${search}`); return NextResponse.redirect(url); } return NextResponse.next(); }
+export const config = { matcher: ["/admin/:path*", "/account/:path*", "/checkout"] };

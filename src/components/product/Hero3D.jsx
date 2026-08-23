@@ -1,0 +1,3 @@
+export default function Hero3D() {
+  return <div className="relative h-[280px] w-full overflow-hidden md:h-[420px]" aria-hidden="true"><div className="absolute inset-x-[16%] bottom-[12%] top-[14%] rounded-[50%] bg-gradient-to-br from-sienna-light via-sienna to-walnut shadow-[inset_0_18px_32px_rgba(255,255,255,.22),0_28px_60px_rgba(58,42,30,.2)]"><div className="absolute inset-x-[8%] top-[5%] h-[32%] rounded-[50%] border-4 border-sand/50 bg-walnut/80 shadow-inner"/><div className="absolute inset-x-[18%] bottom-[18%] h-px bg-sand/25"/><div className="absolute inset-x-[12%] bottom-[29%] h-px bg-sand/20"/></div><div className="absolute bottom-[7%] left-[12%] right-[12%] h-8 rounded-[50%] bg-walnut/15 blur-xl"/></div>;
+}
