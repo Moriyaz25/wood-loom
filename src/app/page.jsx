@@ -6,32 +6,40 @@ import ProductGrid from "@/components/product/ProductGrid";
 export const dynamic = "force-dynamic";
 
 async function getData() {
-  const now = new Date();
-  const [banners, featured, categories] = await Promise.all([
-    db.banner.findMany({
-      where: {
-        position: "HERO",
-        active: true,
-        AND: [
-          { OR: [{ startDate: null }, { startDate: { lte: now } }] },
-          { OR: [{ endDate: null }, { endDate: { gte: now } }] },
-        ],
-      },
-      orderBy: { priority: "desc" },
-    }),
-    db.product.findMany({
-      where: { status: "ACTIVE", isFeatured: true },
-      include: { images: true, category: true },
-      take: 8,
-      orderBy: { createdAt: "desc" },
-    }),
-    db.category.findMany({
-      where: { products: { some: { status: "ACTIVE" } } },
-      include: { _count: { select: { products: true } } },
-      orderBy: { name: "asc" },
-    }),
-  ]);
-  return { banners, featured, categories };
+  try {
+    const now = new Date();
+    const [banners, featured, categories] = await Promise.all([
+      db.banner.findMany({
+        where: {
+          position: "HERO",
+          active: true,
+          AND: [
+            { OR: [{ startDate: null }, { startDate: { lte: now } }] },
+            { OR: [{ endDate: null }, { endDate: { gte: now } }] },
+          ],
+        },
+        orderBy: { priority: "desc" },
+      }),
+      db.product.findMany({
+        where: { status: "ACTIVE", isFeatured: true },
+        include: { images: true, category: true },
+        take: 8,
+        orderBy: { createdAt: "desc" },
+      }),
+      db.category.findMany({
+        where: { products: { some: { status: "ACTIVE" } } },
+        include: { _count: { select: { products: true } } },
+        orderBy: { name: "asc" },
+      }),
+    ]);
+    return { banners, featured, categories };
+  } catch (error) {
+    console.error(
+      "Homepage data is temporarily unavailable:",
+      error instanceof Error ? error.message : error,
+    );
+    return { banners: [], featured: [], categories: [] };
+  }
 }
 
 export default async function HomePage() {

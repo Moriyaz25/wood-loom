@@ -16,12 +16,16 @@ html.lenis {
   height: auto;
 }
 
-html.lenis body {
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
   overflow: hidden;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
 body {
@@ -30,8 +34,14 @@ body {
   background-image: theme("backgroundImage.grain");
 }
 
-::selection { background: #b5652d; color: #fffaf2; }
-a, button { -webkit-tap-highlight-color: transparent; }
+::selection {
+  background: #b5652d;
+  color: #fffaf2;
+}
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -51,9 +61,23 @@ a, button { -webkit-tap-highlight-color: transparent; }
 
 /* carved-corner card, used for product & content cards instead of plain rounded corners */
 .card-notch {
-  clip-path: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  clip-path: polygon(
+    0 14px,
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%
+  );
 }
 
 .card-notch-sm {
-  clip-path: polygon(0 8px, 8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+  clip-path: polygon(
+    0 8px,
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%
+  );
 }

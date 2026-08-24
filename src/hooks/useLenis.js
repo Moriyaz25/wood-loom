@@ -13,14 +13,17 @@ gsap.registerPlugin(ScrollTrigger);
  */
 export default function useLenis() {
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const usesTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (prefersReduced || usesTouch) return;
 
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
-      touchMultiplier: 1.4
+      touchMultiplier: 1.4,
     });
 
     lenis.on("scroll", ScrollTrigger.update);
