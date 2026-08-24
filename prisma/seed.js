@@ -16,19 +16,24 @@ async function main() {
     12,
   );
 
-  await db.user.upsert({
-    where: {
-      email: process.env.ADMIN_SEED_EMAIL || "admin@infinitycreations.in",
-    },
-    update: {},
-    create: {
-      name: "Admin",
-      email: process.env.ADMIN_SEED_EMAIL || "admin@infinitycreations.in",
-      passwordHash,
-      role: "ADMIN",
-      privacyAcceptedAt: new Date(),
-    },
-  });
+  const adminEmail = process.env.ADMIN_SEED_EMAIL || "admin@woodloom.in";
+  const currentAdmin = await db.user.findFirst({ where: { role: "ADMIN" } });
+  if (currentAdmin) {
+    await db.user.update({
+      where: { id: currentAdmin.id },
+      data: { name: "WOODLOOM Admin", email: adminEmail, passwordHash },
+    });
+  } else {
+    await db.user.create({
+      data: {
+        name: "WOODLOOM Admin",
+        email: adminEmail,
+        passwordHash,
+        role: "ADMIN",
+        privacyAcceptedAt: new Date(),
+      },
+    });
+  }
 
   const category = await db.category.upsert({
     where: { slug: "home-decor" },
@@ -52,7 +57,7 @@ async function main() {
       price: 2499,
       compareAtPrice: 2999,
       stock: 12,
-      sku: "IC-BOWL-001",
+      sku: "WL-BOWL-001",
       materials: "Reclaimed walnut, food-safe mineral oil finish",
       dimensions: "Dia 22cm x H 8cm",
       careInstructions: "Hand wash only. Re-oil every 3 months.",

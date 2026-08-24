@@ -15,7 +15,9 @@ export default function Header() {
     count = useCartStore((s) => s.itemCount()),
     open = useCartStore((s) => s.openDrawer);
   const [scrolled, setScrolled] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
+    setHydrated(true);
     const f = () => setScrolled(window.scrollY > 18);
     f();
     window.addEventListener("scroll", f, { passive: true });
@@ -74,7 +76,7 @@ export default function Header() {
             >
               <Icon type="bag" />
               <span className="hidden md:inline">Bag</span>
-              <span className="font-data">{count}</span>
+              <span className="font-data">{hydrated ? count : 0}</span>
             </button>
           </div>
         </div>

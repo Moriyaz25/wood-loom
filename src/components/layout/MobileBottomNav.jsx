@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 
@@ -40,6 +41,9 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const itemCount = useCartStore((s) => s.itemCount());
   const openDrawer = useCartStore((s) => s.openDrawer);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-walnut/10 bg-ivory/95 py-2 backdrop-blur-md md:hidden" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 6px)" }}>
@@ -58,7 +62,7 @@ export default function MobileBottomNav() {
           <path d="M6 8h12l-1.2 10.2a2 2 0 01-2 1.8H9.2a2 2 0 01-2-1.8L6 8z" />
           <path d="M9 8V6a3 3 0 016 0v2" />
         </svg>
-        {itemCount > 0 && (
+        {hydrated && itemCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sienna font-data text-[9px] text-ivory">
             {itemCount}
           </span>

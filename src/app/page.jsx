@@ -147,7 +147,7 @@ export default async function HomePage() {
             className="min-h-[350px] rounded-2xl bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://res.cloudinary.com/h13umivj/image/upload/v1787465282/infinity-creations/site/hero-craft-v1.png')",
+                "url('/images/hero-craft-v1.png')",
             }}
           />
           <div className="md:px-6">
@@ -314,7 +314,7 @@ function FallbackHero() {
       className="flex min-h-[600px] items-center rounded-[2rem] bg-walnut bg-cover bg-center px-8 text-ivory md:px-16"
       style={{
         backgroundImage:
-          "url('https://res.cloudinary.com/h13umivj/image/upload/v1787465282/infinity-creations/site/hero-craft-v1.png')",
+          "url('/images/hero-craft-v1.png')",
       }}
     >
       <div className="max-w-xl">

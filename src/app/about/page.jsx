@@ -47,7 +47,7 @@ export default function AboutPage() {
         </div>
         <div className="relative aspect-[4/3] overflow-hidden rounded-[32px]">
           <Image
-            src="https://res.cloudinary.com/h13umivj/image/upload/v1787465282/infinity-creations/site/hero-craft-v1.png"
+            src="/images/hero-craft-v1.png"
             alt="Wooden craft made in a small workshop"
             fill
             priority
@@ -112,7 +112,7 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-2">
           <div className="relative min-h-80 overflow-hidden rounded-[28px]">
             <Image
-              src="https://res.cloudinary.com/h13umivj/image/upload/v1787465312/infinity-creations/site/carved-serving-tray-v1.png"
+              src="/images/carved-serving-tray-v1.png"
               alt="Hand-carved wooden serving tray"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"

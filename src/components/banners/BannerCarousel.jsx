@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 const IMG = {
-  box: "https://res.cloudinary.com/h13umivj/image/upload/v1787465294/infinity-creations/site/walnut-chapati-box-v1.png",
-  tray: "https://res.cloudinary.com/h13umivj/image/upload/v1787465312/infinity-creations/site/carved-serving-tray-v1.png",
-  life: "https://res.cloudinary.com/h13umivj/image/upload/v1787465282/infinity-creations/site/hero-craft-v1.png",
+  box: "/images/walnut-chapati-box-v1.png",
+  tray: "/images/carved-serving-tray-v1.png",
+  life: "/images/hero-craft-v1.png",
 };
 export default function BannerCarousel() {
   const mx = useMotionValue(0),

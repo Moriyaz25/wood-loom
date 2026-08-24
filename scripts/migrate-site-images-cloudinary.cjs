@@ -17,7 +17,7 @@ async function main() {
   const urls = {};
   for (const [id, path] of files) {
     const result = await cloudinary.uploader.upload(path, {
-      folder: "infinity-creations/site",
+      folder: "woodloom/site",
       public_id: id,
       overwrite: true,
       resource_type: "image",

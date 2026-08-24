@@ -1,4 +1,4 @@
-# Infinity Creations — Full E-commerce Store
+# WOODLOOM — Full E-commerce Store
 
 Handmade wooden crafts ke liye production-ready e-commerce. Next.js App Router + PostgreSQL (Prisma) + admin-controlled banner/ad system.
 
