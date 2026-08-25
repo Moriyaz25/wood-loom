@@ -16,6 +16,7 @@ export default function AuthCard({ mode, googleClientId }) {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const register = mode === "register";
   async function submit(e) {
     e.preventDefault();
@@ -25,26 +26,36 @@ export default function AuthCard({ mode, googleClientId }) {
     const payload = register
       ? form
       : { email: form.email, password: form.password };
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!res.ok) {
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(15000),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(
+          typeof data.error === "string"
+            ? data.error
+            : data.error?.fieldErrors
+              ? Object.values(data.error.fieldErrors).flat()[0]
+              : "Sign in failed. Please try again.",
+        );
+        return;
+      }
+      const next = search.get("next");
+      router.replace(next?.startsWith("/") ? next : "/account");
+      router.refresh();
+    } catch (requestError) {
       setError(
-        typeof data.error === "string"
-          ? data.error
-          : data.error?.fieldErrors
-            ? Object.values(data.error.fieldErrors).flat()[0]
-            : "Please check your details",
+        requestError?.name === "TimeoutError"
+          ? "The server took too long to respond. Please try again."
+          : "Unable to reach the server. Please try again.",
       );
+    } finally {
       setLoading(false);
-      return;
     }
-    const next = search.get("next");
-    router.push(next?.startsWith("/") ? next : "/account");
-    router.refresh();
   }
   return (
     <div className="mx-auto max-w-md px-5 py-16">
@@ -79,10 +90,20 @@ export default function AuthCard({ mode, googleClientId }) {
           />
           <Field
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             autoComplete={register ? "new-password" : "current-password"}
             value={form.password}
             onChange={(v) => setForm({ ...form, password: v })}
+            trailing={
+              <button
+                type="button"
+                onClick={() => setShowPassword((visible) => !visible)}
+                className="focus-ring rounded-md px-2 py-1 font-body text-xs font-medium text-walnut/60 hover:text-walnut"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            }
           />
           {register && (
             <>
@@ -147,18 +168,25 @@ export default function AuthCard({ mode, googleClientId }) {
     </div>
   );
 }
-function Field({ label, value, onChange, type = "text", autoComplete }) {
+function Field({ label, value, onChange, type = "text", autoComplete, trailing }) {
   return (
     <label className="block">
       <span className="font-body text-xs text-walnut/60">{label}</span>
-      <input
-        required
-        type={type}
-        autoComplete={autoComplete}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="focus-ring mt-1 w-full rounded-xl border border-walnut/15 bg-white px-4 py-3 font-body text-sm shadow-carve-inset"
-      />
+      <span className="relative mt-1 block">
+        <input
+          required
+          type={type}
+          autoComplete={autoComplete}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`focus-ring w-full rounded-xl border border-walnut/15 bg-white px-4 py-3 font-body text-sm shadow-carve-inset ${trailing ? "pr-16" : ""}`}
+        />
+        {trailing && (
+          <span className="absolute inset-y-0 right-2 flex items-center">
+            {trailing}
+          </span>
+        )}
+      </span>
     </label>
   );
 }
