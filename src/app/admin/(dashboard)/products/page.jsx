@@ -285,7 +285,8 @@ export default function AdminProductsPage() {
                 stock {product.stock} · {product.category.name}
               </p>
             </div>
-            <div className="flex items-center gap-4 font-body text-xs">
+            <div className="flex w-full flex-wrap items-center gap-2 font-body text-xs sm:w-auto sm:gap-4">
+              <PriceEditor product={product} onSaved={loadProducts} />
               <ShippingEditor product={product} onSaved={loadProducts} />
               <ToggleChip
                 active={product.isPromoted}
@@ -326,6 +327,48 @@ function Field({ label, value, onChange, type = "text", required }) {
         className="focus-ring mt-1 w-full rounded-lg border border-walnut/15 bg-ivory px-3 py-2 font-body text-sm shadow-carve-inset"
       />
     </label>
+  );
+}
+
+function PriceEditor({ product, onSaved }) {
+  const [value, setValue] = useState(String(product.price));
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function save() {
+    const price = Number(value);
+    if (!Number.isInteger(price) || price <= 0) {
+      setMessage("Enter a valid whole-number price");
+      return;
+    }
+    setSaving(true);
+    setMessage("");
+    try {
+      const response = await fetch(`/api/admin/products/${product.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ price }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error?.formErrors?.[0] || "Could not update price");
+      setMessage("Saved");
+      await onSaved();
+    } catch (error) {
+      setMessage(error.message || "Could not update price");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-1 rounded-full border border-walnut/15 bg-white px-2 py-1">
+        <span className="text-walnut/50">Price ₹</span>
+        <input min="1" step="1" inputMode="numeric" type="number" value={value} onChange={(event) => { setValue(event.target.value); setMessage(""); }} className="w-20 bg-transparent text-right outline-none" aria-label={`Price for ${product.name}`} />
+        <button type="button" onClick={save} disabled={saving || value === String(product.price)} className="rounded-full bg-walnut px-2 py-1 text-ivory disabled:opacity-40">{saving ? "…" : "Save"}</button>
+      </div>
+      {message && <p className={`mt-1 text-[10px] ${message === "Saved" ? "text-green-700" : "text-red-600"}`}>{message}</p>}
+    </div>
   );
 }
 
