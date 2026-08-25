@@ -25,6 +25,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState(empty);
   const [email, setEmail] = useState("");
   const [saveAddress, setSaveAddress] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -77,6 +78,7 @@ export default function CheckoutPage() {
           addressLine2: form.addressLine2 || null,
           notes: form.notes || null,
           saveAddress,
+          paymentMethod,
           idempotencyKey: idempotencyKey.current,
           items: items.map((item) => ({
             productId: item.productId,
@@ -98,7 +100,7 @@ export default function CheckoutPage() {
       }
       clearCart();
       router.push(
-        `/order-confirmed?orderNumber=${encodeURIComponent(data.order.orderNumber)}&payment=pending`,
+        `/order-confirmed?orderNumber=${encodeURIComponent(data.order.orderNumber)}&payment=pending&method=${paymentMethod.toLowerCase()}`,
       );
     } catch (checkoutError) {
       setError(checkoutError.message || "Could not save your checkout details");
@@ -138,6 +140,11 @@ export default function CheckoutPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
+      <nav aria-label="Checkout progress" className="mb-8 grid grid-cols-3 overflow-hidden rounded-full border border-walnut/10 bg-white p-1 font-body text-[10px] font-semibold uppercase tracking-[.12em] text-walnut/45 sm:text-xs">
+        <span className="rounded-full bg-walnut px-3 py-2.5 text-center text-ivory">1 · Address</span>
+        <span className="px-3 py-2.5 text-center text-walnut">2 · Payment</span>
+        <span className="px-3 py-2.5 text-center">3 · Confirm</span>
+      </nav>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-data text-xs uppercase tracking-[.2em] text-sienna">
@@ -214,6 +221,24 @@ export default function CheckoutPage() {
             />
             Save this address securely to my profile for future checkout
           </label>
+          <div className="mt-8 border-t border-walnut/10 pt-7">
+            <div className="flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <p className="font-data text-[10px] uppercase tracking-[.18em] text-sienna">Payment</p>
+                <h2 className="mt-1 font-display text-2xl text-walnut">Choose how to pay</h2>
+              </div>
+              <span className="font-body text-[11px] text-walnut/45">Secure · No card data stored</span>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <PaymentChoice active={paymentMethod === "UPI"} onClick={() => setPaymentMethod("UPI")} icon="UPI" title="UPI / QR" description="Pay using any UPI app" />
+              <PaymentChoice active={paymentMethod === "CARD"} onClick={() => setPaymentMethod("CARD")} icon="CARD" title="Credit / Debit Card" description="Processed by a secure gateway" />
+            </div>
+            <div className="mt-4 rounded-xl border border-sienna/15 bg-sienna/[.05] p-4 font-body text-xs leading-5 text-walnut/65">
+              {paymentMethod === "UPI"
+                ? "The final UPI ID, QR and order-linked instructions will appear here once configured."
+                : "Card details will be collected only by a PCI-compliant gateway. WOODLOOM will never store your card number or CVV."}
+            </div>
+          </div>
         </section>
         <aside className="rounded-2xl border border-walnut/10 bg-white p-5 shadow-carve sm:p-6 lg:sticky lg:top-28">
           <h2 className="font-display text-2xl text-walnut">Order summary</h2>
@@ -263,7 +288,7 @@ export default function CheckoutPage() {
               disabled={submitting}
               className="mt-6 w-full rounded-full bg-walnut px-5 py-3.5 font-body text-sm font-semibold text-ivory transition hover:bg-sienna disabled:cursor-wait disabled:opacity-60"
             >
-              {submitting ? "Saving checkout…" : "Submit delivery details"}
+              {submitting ? "Creating secure order…" : `Continue with ${paymentMethod === "UPI" ? "UPI" : "card"}`}
             </button>
           ) : (
             <Link
@@ -274,11 +299,28 @@ export default function CheckoutPage() {
             </Link>
           )}
           <p className="mt-4 text-center font-body text-xs leading-5 text-walnut/45">
-            Payment is not collected yet. Your checkout will remain payment
-            pending until the payment gateway is connected.
+            Payment remains pending until the configured payment flow confirms it.
           </p>
         </aside>
       </form>
     </main>
+  );
+}
+
+function PaymentChoice({ active, onClick, icon, title, description }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-2xl border p-4 text-left transition ${active ? "border-sienna bg-white shadow-carve ring-2 ring-sienna/10" : "border-walnut/10 bg-white/60 hover:border-walnut/25"}`}
+    >
+      <span className="flex items-center justify-between gap-3">
+        <span className="rounded-lg bg-walnut px-2.5 py-1 font-data text-[9px] tracking-wider text-ivory">{icon}</span>
+        <span className={`h-4 w-4 rounded-full border-2 ${active ? "border-sienna bg-sienna shadow-[inset_0_0_0_3px_white]" : "border-walnut/25"}`} />
+      </span>
+      <span className="mt-4 block font-body text-sm font-semibold text-walnut">{title}</span>
+      <span className="mt-1 block font-body text-xs text-walnut/50">{description}</span>
+    </button>
   );
 }

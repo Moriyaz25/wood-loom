@@ -142,6 +142,7 @@ export const checkoutSchema = z
       .trim()
       .regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit PIN code"),
     notes: optionalText(500),
+    paymentMethod: z.enum(["UPI", "CARD"]),
     saveAddress: z.boolean().optional().default(false),
     items: z
       .array(

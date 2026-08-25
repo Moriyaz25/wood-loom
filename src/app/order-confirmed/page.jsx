@@ -2,7 +2,7 @@ import Link from "next/link";
 import WoodRingDivider from "@/components/ui/WoodRingDivider";
 
 export default async function OrderConfirmedPage({ searchParams }) {
-  const { orderNumber, payment } = await searchParams;
+  const { orderNumber, payment, method } = await searchParams;
   const isPendingPayment = payment === "pending";
   return (
     <div className="mx-auto max-w-lg px-5 py-24 text-center">
@@ -12,7 +12,7 @@ export default async function OrderConfirmedPage({ searchParams }) {
       </h1>
       <p className="mt-3 font-body text-sm leading-6 text-walnut/70">
         {isPendingPayment
-          ? "Your checkout is saved securely. No payment has been collected and the order remains pending until online payment is connected."
+          ? `Your order is saved securely. ${method === "card" ? "Card" : "UPI"} payment is pending and the order will be confirmed only after verified payment.`
           : "Thank you. You can track the latest status from your account."}
       </p>
       {orderNumber && (

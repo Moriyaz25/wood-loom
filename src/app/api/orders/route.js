@@ -38,7 +38,7 @@ export async function POST(request) {
         status: existing.status,
       },
     });
-  const { items, saveAddress, idempotencyKey, ...customer } = parsed.data;
+  const { items, saveAddress, idempotencyKey, paymentMethod, ...customer } = parsed.data;
   const uniqueIds = [...new Set(items.map((i) => i.productId))];
   if (uniqueIds.length !== items.length)
     return NextResponse.json(
@@ -86,7 +86,7 @@ export async function POST(request) {
             email: user.email,
             ...customer,
             paymentStatus: "PENDING",
-            paymentMethod: "PENDING",
+            paymentMethod,
             subtotal,
             shippingFee,
             total: subtotal + shippingFee,
