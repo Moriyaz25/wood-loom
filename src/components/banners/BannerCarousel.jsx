@@ -30,9 +30,9 @@ export default function BannerCarousel() {
         mx.set(0);
         my.set(0);
       }}
-      className="relative overflow-hidden bg-[#f7f1e8] px-6 py-9 sm:px-9 md:min-h-[510px] md:px-12 md:py-10 lg:px-14"
+      className="relative overflow-hidden bg-[#f7f1e8] px-5 py-7 sm:px-8 sm:py-9 md:min-h-[500px] md:px-10 lg:px-14"
     >
-      <div className="grid items-center gap-12 md:grid-cols-[45%_55%] md:gap-5">
+      <div className="grid items-center gap-7 md:grid-cols-[45%_55%] md:gap-5">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function BannerCarousel() {
           <p className="font-body text-[10px] font-semibold uppercase tracking-[.3em] text-sienna">
             New collection
           </p>
-          <h1 className="mt-5 max-w-[650px] font-display text-[clamp(3.1rem,5.2vw,5.5rem)] uppercase leading-[.97] tracking-[-.025em] text-[#281b14]">
+          <h1 className="mt-4 max-w-[650px] font-display text-[clamp(2.45rem,5.2vw,5.5rem)] uppercase leading-[.97] tracking-[-.025em] text-[#281b14] sm:mt-5">
             Crafted from wood.
             <br />
             Made for home.
@@ -74,7 +74,7 @@ export default function BannerCarousel() {
           initial={{ opacity: 0, scale: 0.975 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="relative h-[400px] sm:h-[440px] md:h-[430px]"
+          className="relative mx-auto h-[280px] w-full max-w-[520px] sm:h-[370px] md:h-[420px]"
         >
           <Photo
             src={IMG.box}

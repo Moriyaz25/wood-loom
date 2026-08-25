@@ -311,22 +311,23 @@ function Step({ n, title, children }) {
 function FallbackHero() {
   return (
     <div
-      className="flex min-h-[600px] items-center rounded-[2rem] bg-walnut bg-cover bg-center px-8 text-ivory md:px-16"
+      className="relative isolate flex min-h-[430px] items-end overflow-hidden bg-walnut bg-cover bg-center px-6 py-10 text-ivory sm:min-h-[500px] sm:items-center sm:px-10 md:min-h-[560px] md:px-16 lg:min-h-[620px] lg:rounded-b-[2rem]"
       style={{
         backgroundImage:
           "url('/images/hero-craft-v1.png')",
       }}
     >
-      <div className="max-w-xl">
-        <p className="font-body text-xs uppercase tracking-[.2em]">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/25 to-black/5 sm:bg-gradient-to-r sm:from-black/70 sm:via-black/25 sm:to-transparent" />
+      <div className="max-w-[19rem] sm:max-w-lg">
+        <p className="font-body text-[10px] font-semibold uppercase tracking-[.24em] sm:text-xs">
           Handcrafted in India
         </p>
-        <h1 className="mt-4 font-display text-5xl md:text-7xl">
+        <h1 className="mt-3 font-display text-[2.75rem] leading-[.96] sm:mt-4 sm:text-6xl md:text-7xl">
           Wood, shaped into stories.
         </h1>
         <Link
           href="/products"
-          className="mt-8 inline-flex rounded-full bg-ivory px-7 py-3.5 font-body text-sm text-walnut"
+          className="mt-6 inline-flex rounded-full bg-ivory px-6 py-3 font-body text-sm text-walnut transition hover:-translate-y-0.5 hover:bg-white sm:mt-8 sm:px-7 sm:py-3.5"
         >
           Shop the collection
         </Link>
