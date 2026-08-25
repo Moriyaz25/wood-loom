@@ -13,15 +13,15 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl text-walnut">Dashboard</h1>
+      <h1 className="hidden font-display text-2xl text-walnut md:block">Dashboard</h1>
 
-      <div className="mt-6 grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 md:mt-6 md:gap-4">
         <StatCard label="Live products" value={productCount} />
         <StatCard label="Active banners" value={activeBannerCount} />
         <StatCard label="Total orders" value={orderCount} />
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 md:mt-10 md:grid-cols-2">
         <div>
           <h2 className="font-display text-lg text-walnut">Low stock</h2>
           <div className="mt-3 space-y-2">
@@ -58,9 +58,9 @@ export default async function AdminDashboardPage() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="card-notch-sm bg-ivory p-5 shadow-carve">
-      <p className="font-data text-2xl text-walnut">{value}</p>
-      <p className="font-body text-xs text-walnut/60">{label}</p>
+    <div className="card-notch-sm min-w-0 bg-ivory p-3 shadow-carve sm:p-5">
+      <p className="font-data text-xl text-walnut sm:text-2xl">{value}</p>
+      <p className="mt-1 break-words font-body text-[10px] leading-4 text-walnut/60 sm:text-xs">{label}</p>
     </div>
   );
 }
