@@ -186,6 +186,8 @@ model Order {
   status         OrderStatus   @default(PENDING)
   paymentStatus  PaymentStatus @default(PENDING)
   paymentMethod  String        @default("PENDING")
+  paymentReference String?
+  paymentSubmittedAt DateTime?
   subtotal       Int
   shippingFee    Int           @default(0)
   total          Int

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
@@ -16,6 +17,8 @@ const empty = {
   notes: "",
 };
 
+const UPI_ID = "moriyaz933-1@okaxis";
+
 export default function CheckoutPage() {
   const router = useRouter();
   const items = useCartStore((s) => s.items);
@@ -26,6 +29,8 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [saveAddress, setSaveAddress] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("UPI");
+  const [paymentReference, setPaymentReference] = useState("");
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -79,6 +84,7 @@ export default function CheckoutPage() {
           notes: form.notes || null,
           saveAddress,
           paymentMethod,
+          paymentReference: paymentReference.trim() || null,
           idempotencyKey: idempotencyKey.current,
           items: items.map((item) => ({
             productId: item.productId,
@@ -231,12 +237,25 @@ export default function CheckoutPage() {
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <PaymentChoice active={paymentMethod === "UPI"} onClick={() => setPaymentMethod("UPI")} icon="UPI" title="UPI / QR" description="Pay using any UPI app" />
-              <PaymentChoice active={paymentMethod === "CARD"} onClick={() => setPaymentMethod("CARD")} icon="CARD" title="Credit / Debit Card" description="Processed by a secure gateway" />
+              <PaymentChoice disabled icon="CARD" title="Credit / Debit Card" description="Gateway setup required" />
             </div>
-            <div className="mt-4 rounded-xl border border-sienna/15 bg-sienna/[.05] p-4 font-body text-xs leading-5 text-walnut/65">
-              {paymentMethod === "UPI"
-                ? "The final UPI ID, QR and order-linked instructions will appear here once configured."
-                : "Card details will be collected only by a PCI-compliant gateway. WOODLOOM will never store your card number or CVV."}
+            <div className="mt-4 grid items-center gap-5 rounded-2xl border border-sienna/15 bg-white p-4 sm:grid-cols-[180px_1fr] sm:p-5">
+              <div className="mx-auto overflow-hidden rounded-xl border border-walnut/10 bg-[#f2f4fb]">
+                <Image src="/images/woodloom-upi-qr.jpeg" alt="Scan to pay WOODLOOM using UPI" width={360} height={480} className="h-auto w-full" />
+              </div>
+              <div>
+                <p className="font-display text-xl text-walnut">Scan and pay</p>
+                <p className="mt-2 font-body text-xs leading-5 text-walnut/55">Use Google Pay, PhonePe, Paytm or any UPI app. Pay the exact order total shown in the summary.</p>
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-sand/70 p-2 pl-3">
+                  <code className="min-w-0 flex-1 truncate font-data text-xs text-walnut">{UPI_ID}</code>
+                  <button type="button" onClick={async () => { await navigator.clipboard.writeText(UPI_ID); setCopied(true); setTimeout(() => setCopied(false), 1800); }} className="rounded-lg bg-walnut px-3 py-2 font-body text-[10px] font-semibold uppercase tracking-wider text-ivory">{copied ? "Copied" : "Copy"}</button>
+                </div>
+                <a href={`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent("Mo Riyaz")}&am=${productSubtotal + shippingTotal}&cu=INR`} className="mt-3 block rounded-full border border-walnut/20 px-4 py-3 text-center font-body text-xs font-semibold text-walnut sm:hidden">Open UPI app</a>
+                <label className="mt-4 block font-body text-xs text-walnut/60">
+                  UPI transaction/reference number
+                  <input required value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} placeholder="Enter after payment" className="mt-1.5 block w-full rounded-xl border border-walnut/15 bg-white px-4 py-3 text-sm text-walnut outline-none focus:border-sienna focus:ring-2 focus:ring-sienna/10" />
+                </label>
+              </div>
             </div>
           </div>
         </section>
@@ -307,13 +326,14 @@ export default function CheckoutPage() {
   );
 }
 
-function PaymentChoice({ active, onClick, icon, title, description }) {
+function PaymentChoice({ active, onClick, icon, title, description, disabled = false }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-pressed={active}
-      className={`rounded-2xl border p-4 text-left transition ${active ? "border-sienna bg-white shadow-carve ring-2 ring-sienna/10" : "border-walnut/10 bg-white/60 hover:border-walnut/25"}`}
+      className={`rounded-2xl border p-4 text-left transition ${active ? "border-sienna bg-white shadow-carve ring-2 ring-sienna/10" : "border-walnut/10 bg-white/60 hover:border-walnut/25"} disabled:cursor-not-allowed disabled:opacity-45`}
     >
       <span className="flex items-center justify-between gap-3">
         <span className="rounded-lg bg-walnut px-2.5 py-1 font-data text-[9px] tracking-wider text-ivory">{icon}</span>
