@@ -131,6 +131,7 @@ model ProductImage {
   url       String
   altText   String?
   position  Int     @default(0)
+  mediaType String  @default("IMAGE")
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
 

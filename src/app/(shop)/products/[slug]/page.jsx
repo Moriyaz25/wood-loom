@@ -57,7 +57,7 @@ export default async function ProductDetailPage({ params }) {
     name: product.name,
     description: product.shortDesc,
     sku: product.sku,
-    image: product.images.map((i) => i.url),
+    image: product.images.filter((item) => item.mediaType !== "VIDEO").map((i) => i.url),
     offers: {
       "@type": "Offer",
       price: product.price,

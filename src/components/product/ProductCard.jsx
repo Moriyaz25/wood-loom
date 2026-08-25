@@ -22,7 +22,8 @@ export default function ProductCard({ product }) {
     }
     if (res.ok) setLiked((await res.json()).liked);
   }
-  const image = product.images?.[0]?.url || "/textures/placeholder-product.svg";
+  const cover = product.images?.find((media) => media.mediaType !== "VIDEO") || product.images?.[0];
+  const image = cover?.mediaType === "VIDEO" ? "/textures/placeholder-product.svg" : cover?.url || "/textures/placeholder-product.svg";
   const sale = product.compareAtPrice > product.price;
   const discount = sale
     ? Math.round((1 - product.price / product.compareAtPrice) * 100)

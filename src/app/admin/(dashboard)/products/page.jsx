@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BulkUploadPanel from "@/components/admin/BulkUploadPanel";
-import ImageUploader from "@/components/admin/ImageUploader";
+import ProductMediaUploader from "@/components/admin/ProductMediaUploader";
 
 const emptyForm = {
   name: "",
@@ -18,7 +18,7 @@ const emptyForm = {
   dimensions: "",
   careInstructions: "",
   categoryId: "",
-  imageUrl: "",
+  media: [],
 };
 
 export default function AdminProductsPage() {
@@ -102,7 +102,7 @@ export default function AdminProductsPage() {
       dimensions: form.dimensions || null,
       careInstructions: form.careInstructions || null,
       categoryId: form.categoryId,
-      images: [{ url: form.imageUrl || "/textures/placeholder-product.svg" }],
+      images: form.media.length ? form.media : [{ url: "/textures/placeholder-product.svg", mediaType: "IMAGE" }],
     };
 
     const res = await fetch("/api/admin/products", {
@@ -212,18 +212,8 @@ export default function AdminProductsPage() {
               onChange={(v) => updateField("shippingFee", v)}
               required
             />
-            <div>
-              <Field
-                label="Image URL"
-                value={form.imageUrl}
-                onChange={(v) => updateField("imageUrl", v)}
-              />
-              <ImageUploader
-                value={form.imageUrl}
-                onChange={(v) => updateField("imageUrl", v)}
-              />
-            </div>
           </div>
+          <div><p className="mb-2 font-body text-xs text-walnut/60">Product gallery <span className="text-sienna">*</span></p><ProductMediaUploader value={form.media} onChange={(value) => updateField("media", value)} /></div>
           <Field
             label="Short description"
             value={form.shortDesc}

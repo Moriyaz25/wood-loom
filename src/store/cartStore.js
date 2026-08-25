@@ -28,7 +28,7 @@ export const useCartStore = create(
                 slug: product.slug,
                 price: product.price,
                 shippingFee: product.shippingFee ?? 100,
-                image: product.images?.[0]?.url,
+                image: product.images?.find((media) => media.mediaType !== "VIDEO")?.url || product.images?.[0]?.url,
                 quantity,
               },
             ],

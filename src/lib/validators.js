@@ -74,9 +74,10 @@ const productBaseSchema = z
     isPromoted: z.boolean().optional(),
     status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
     images: z
-      .array(z.object({ url: imageUrl, altText: optionalText(200) }).strict())
+      .array(z.object({ url: imageUrl, altText: optionalText(200), mediaType: z.enum(["IMAGE", "VIDEO"]).optional().default("IMAGE") }).strict())
       .min(1)
-      .max(12),
+      .max(12)
+      .refine((items) => items.some((item) => item.mediaType !== "VIDEO"), "Add at least one product image"),
   })
   .strict();
 export const productSchema = productBaseSchema.refine(
