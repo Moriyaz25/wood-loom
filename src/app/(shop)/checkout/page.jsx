@@ -34,6 +34,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     idempotencyKey.current = crypto.randomUUID();
@@ -72,6 +73,19 @@ export default function CheckoutPage() {
   async function submitCheckout(event) {
     event.preventDefault();
     if (!items.length || submitting) return;
+    const validationErrors = {};
+    if (form.customerName.trim().length < 2) validationErrors.customerName = "Enter your full name";
+    if (!/^[6-9][0-9]{9}$/.test(form.phone)) validationErrors.phone = "Enter a valid 10-digit Indian mobile number";
+    if (form.addressLine1.trim().length < 4) validationErrors.addressLine1 = "Enter house, street and area";
+    if (form.city.trim().length < 2) validationErrors.city = "Enter your city";
+    if (form.state.trim().length < 2) validationErrors.state = "Enter your state";
+    if (!/^[1-9][0-9]{5}$/.test(form.pincode)) validationErrors.pincode = "Enter a valid 6-digit PIN code";
+    if (!paymentReference.trim()) validationErrors.paymentReference = "Enter the UPI transaction/reference number";
+    setFieldErrors(validationErrors);
+    if (Object.keys(validationErrors).length) {
+      document.querySelector(`[name="${Object.keys(validationErrors)[0]}"]`)?.focus();
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
@@ -184,8 +198,9 @@ export default function CheckoutPage() {
                 key={key}
                 className={`font-body text-xs text-walnut/60 ${key.startsWith("address") ? "sm:col-span-2" : ""}`}
               >
-                {label}
+                {label}{required && <span className="ml-1 text-sienna" aria-hidden="true">*</span>}
                 <input
+                  name={key}
                   type={type}
                   required={required}
                   inputMode={
@@ -193,14 +208,17 @@ export default function CheckoutPage() {
                   }
                   autoComplete={autocomplete[key]}
                   value={form[key]}
-                  onChange={(event) =>
-                    setForm((current) => ({
-                      ...current,
-                      [key]: event.target.value,
-                    }))
-                  }
-                  className="mt-1.5 block w-full rounded-xl border border-walnut/15 bg-white px-4 py-3.5 text-sm text-walnut outline-none transition focus:border-sienna focus:ring-2 focus:ring-sienna/10"
+                  maxLength={key === "phone" ? 10 : key === "pincode" ? 6 : undefined}
+                  pattern={key === "phone" ? "[6-9][0-9]{9}" : key === "pincode" ? "[1-9][0-9]{5}" : undefined}
+                  onChange={(event) => {
+                    const value = key === "phone" || key === "pincode" ? event.target.value.replace(/\D/g, "") : event.target.value;
+                    setForm((current) => ({ ...current, [key]: value }));
+                    setFieldErrors((current) => ({ ...current, [key]: "" }));
+                  }}
+                  aria-invalid={Boolean(fieldErrors[key])}
+                  className={`mt-1.5 block w-full rounded-xl border bg-white px-4 py-3.5 text-sm text-walnut outline-none transition focus:border-sienna focus:ring-2 focus:ring-sienna/10 ${fieldErrors[key] ? "border-red-500" : "border-walnut/15"}`}
                 />
+                {fieldErrors[key] && <span className="mt-1 block text-[11px] text-red-600">{fieldErrors[key]}</span>}
               </label>
             ))}
             <label className="font-body text-xs text-walnut/60 sm:col-span-2">
@@ -253,7 +271,9 @@ export default function CheckoutPage() {
                 <a href={`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent("Mo Riyaz")}&am=${productSubtotal + shippingTotal}&cu=INR`} className="mt-3 block rounded-full border border-walnut/20 px-4 py-3 text-center font-body text-xs font-semibold text-walnut sm:hidden">Open UPI app</a>
                 <label className="mt-4 block font-body text-xs text-walnut/60">
                   UPI transaction/reference number
-                  <input required value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} placeholder="Enter after payment" className="mt-1.5 block w-full rounded-xl border border-walnut/15 bg-white px-4 py-3 text-sm text-walnut outline-none focus:border-sienna focus:ring-2 focus:ring-sienna/10" />
+                  <span className="ml-1 text-sienna">*</span>
+                  <input name="paymentReference" required value={paymentReference} onChange={(event) => { setPaymentReference(event.target.value.replace(/[^a-zA-Z0-9-]/g, "").slice(0, 80)); setFieldErrors((current) => ({ ...current, paymentReference: "" })); }} placeholder="Enter after payment" aria-invalid={Boolean(fieldErrors.paymentReference)} className={`mt-1.5 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-walnut outline-none focus:border-sienna focus:ring-2 focus:ring-sienna/10 ${fieldErrors.paymentReference ? "border-red-500" : "border-walnut/15"}`} />
+                  {fieldErrors.paymentReference && <span className="mt-1 block text-[11px] text-red-600">{fieldErrors.paymentReference}</span>}
                 </label>
               </div>
             </div>

@@ -125,14 +125,14 @@ export const bannerSchema = bannerBaseSchema.refine(
 );
 export const bannerPatchSchema = bannerBaseSchema.partial().strict();
 
-export const checkoutSchema = z
+const checkoutBaseSchema = z
   .object({
     idempotencyKey: z.string().uuid(),
     customerName: clean(2, 80),
     phone: z
       .string()
       .trim()
-      .regex(/^[+]?[0-9 ()-]{10,18}$/),
+      .regex(/^[6-9][0-9]{9}$/, "Enter a valid 10-digit Indian mobile number"),
     addressLine1: clean(4, 200),
     addressLine2: optionalText(200),
     city: clean(2, 80),
@@ -159,19 +159,26 @@ export const checkoutSchema = z
   })
   .strict();
 
+export const checkoutSchema = checkoutBaseSchema
+  .superRefine((value, context) => {
+    if (value.paymentMethod === "UPI" && !value.paymentReference?.trim()) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["paymentReference"], message: "Enter the UPI transaction/reference number" });
+    }
+  });
+
 export const profileSchema = z
   .object({
     name: clean(2, 80),
     phone: z
       .string()
       .trim()
-      .regex(/^[+]?[0-9 ()-]{10,18}$/)
+      .regex(/^[6-9][0-9]{9}$/, "Enter a valid 10-digit Indian mobile number")
       .optional()
       .nullable(),
     marketingConsent: z.boolean(),
   })
   .strict();
-export const addressSchema = checkoutSchema
+export const addressSchema = checkoutBaseSchema
   .pick({
     customerName: true,
     phone: true,
