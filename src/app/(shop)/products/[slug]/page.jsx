@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 import AddToCartPanel from "@/components/product/AddToCartPanel";
 import WoodRingDivider from "@/components/ui/WoodRingDivider";
 import ProductCard from "@/components/product/ProductCard";
+import ProductGallery from "@/components/product/ProductGallery";
 
 async function getProduct(slug) {
   const product = await db.product.findUnique({
@@ -77,29 +77,20 @@ export default async function ProductDetailPage({ params }) {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
+    <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-10 lg:px-9">
       {/* eslint-disable-next-line react/no-danger */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <div className="card-notch relative aspect-square overflow-hidden bg-sand">
-          <Image
-            src={product.images[0]?.url || "/textures/placeholder-product.svg"}
-            alt={product.name}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
-          />
-        </div>
+      <div className="grid grid-cols-1 gap-7 lg:grid-cols-[minmax(0,1.08fr)_minmax(380px,.92fr)] lg:gap-12">
+        <ProductGallery images={product.images} name={product.name} />
 
-        <div>
+        <div className="lg:sticky lg:top-24 lg:self-start lg:py-4">
           <p className="font-data text-xs uppercase tracking-wide text-sienna">
             {product.category.name}
           </p>
-          <h1 className="mt-2 font-display text-3xl text-walnut">
+          <h1 className="mt-2 font-display text-4xl leading-tight text-walnut sm:text-5xl">
             {product.name}
           </h1>
           {avgRating && (
@@ -119,32 +110,33 @@ export default async function ProductDetailPage({ params }) {
             Shipping charge: ₹{product.shippingFee.toLocaleString("en-IN")} per
             item
           </p>
-          <p className="mt-4 font-body text-sm text-walnut/70">
+          <p className="mt-5 font-body text-[15px] leading-7 text-walnut/70">
             {product.description}
           </p>
 
           <AddToCartPanel product={product} />
 
-          <div className="mt-8 space-y-2 border-t border-walnut/10 pt-6 font-body text-sm text-walnut/70">
+          <div className="mt-8 grid grid-cols-2 gap-3 border-t border-walnut/10 pt-6 font-body text-sm text-walnut/70">
             {product.materials && (
-              <p>
+              <p className="rounded-xl bg-sand/60 p-3">
                 <span className="text-walnut">Materials:</span>{" "}
                 {product.materials}
               </p>
             )}
             {product.dimensions && (
-              <p>
+              <p className="rounded-xl bg-sand/60 p-3">
                 <span className="text-walnut">Dimensions:</span>{" "}
                 {product.dimensions}
               </p>
             )}
             {product.careInstructions && (
-              <p>
+              <p className="col-span-2 rounded-xl bg-sand/60 p-3">
                 <span className="text-walnut">Care:</span>{" "}
                 {product.careInstructions}
               </p>
             )}
           </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 border-t border-walnut/10 pt-6 font-body text-xs text-walnut/60"><p>◇ Handcrafted in India</p><p>◇ Carefully packed</p><p>◇ Natural wood grain</p><p>◇ Secure UPI payment</p></div>
         </div>
       </div>
 
