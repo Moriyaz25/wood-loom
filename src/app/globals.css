@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-fraunces: "Fraunces", serif;
-  --font-worksans: "Work Sans", sans-serif;
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "Inter", sans-serif;
   --font-plexmono: "IBM Plex Mono", monospace;
 }
 
@@ -18,7 +18,7 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background-color: theme("colors.sand.light");
-  color: theme("colors.walnut.DEFAULT");
+  color: #1c1814;
   background-image: theme("backgroundImage.grain");
 }
 

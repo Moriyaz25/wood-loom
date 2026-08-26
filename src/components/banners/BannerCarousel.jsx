@@ -30,9 +30,9 @@ export default function BannerCarousel() {
         mx.set(0);
         my.set(0);
       }}
-      className="relative overflow-hidden bg-[#f7f1e8] px-5 py-7 sm:px-8 sm:py-9 md:min-h-[500px] md:px-10 lg:px-14"
+      className="relative overflow-hidden bg-[#f7f3ec] px-5 py-8 sm:px-8 sm:py-10 md:min-h-[540px] md:px-10 lg:px-14"
     >
-      <div className="grid items-center gap-7 md:grid-cols-[45%_55%] md:gap-5">
+      <div className="grid items-center gap-9 md:grid-cols-[44%_56%] md:gap-6">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function BannerCarousel() {
           <p className="font-body text-[10px] font-semibold uppercase tracking-[.3em] text-sienna">
             New collection
           </p>
-          <h1 className="mt-4 max-w-[650px] font-display text-[clamp(2.45rem,5.2vw,5.5rem)] uppercase leading-[.97] tracking-[-.025em] text-[#281b14] sm:mt-5">
+          <h1 className="mt-4 max-w-[650px] font-display text-[clamp(2.7rem,5.4vw,6rem)] uppercase leading-[.9] text-[#1c1814] sm:mt-5">
             Crafted from wood.
             <br />
             Made for home.
@@ -51,10 +51,10 @@ export default function BannerCarousel() {
           <p className="mt-6 max-w-sm font-body text-base leading-7 text-walnut/65">
             Handcrafted tableware &amp; homeware, made by Indian artisans.
           </p>
-          <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
+          <div className="mt-8 grid max-w-md grid-cols-1 gap-3 sm:grid-cols-2">
             <Link
               href="/products"
-              className="group rounded-sm bg-walnut px-5 py-4 text-center font-body text-[11px] font-semibold uppercase tracking-[.15em] text-white transition duration-200 hover:-translate-y-0.5 hover:bg-sienna"
+              className="group rounded-sm bg-walnut-dark px-5 py-4 text-center font-body text-[11px] font-semibold uppercase tracking-[.15em] text-white transition duration-200 hover:-translate-y-0.5 hover:bg-walnut"
             >
               Explore collection
             </Link>
@@ -74,23 +74,23 @@ export default function BannerCarousel() {
           initial={{ opacity: 0, scale: 0.975 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto h-[280px] w-full max-w-[520px] sm:h-[370px] md:h-[420px]"
+          className="relative mx-auto h-[310px] w-full max-w-[620px] sm:h-[410px] md:h-[470px]"
         >
           <Photo
             src={IMG.box}
             alt="Handcrafted walnut storage box"
-            className="left-0 top-0 h-[70%] w-[62%]"
+            className="left-0 top-0 h-[72%] w-[64%]"
             priority
           />
           <Photo
             src={IMG.tray}
             alt="Carved walnut serving tray"
-            className="right-0 top-0 h-[38%] w-[36%]"
+            className="right-0 top-[4%] h-[38%] w-[34%]"
           />
           <Photo
             src={IMG.life}
             alt="Wooden bowl on a carved tray"
-            className="bottom-0 right-[8%] z-10 h-[48%] w-[48%] border-[7px] border-[#f7f1e8]"
+            className="bottom-0 right-[6%] z-10 h-[50%] w-[50%] border-[7px] border-[#f7f3ec]"
           />
         </motion.div>
       </div>

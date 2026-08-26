@@ -24,8 +24,8 @@ export default function ProductGrid({ products, title, description }) {
         ease: "power2.out",
         scrollTrigger: {
           trigger: gridRef.current,
-          start: "top 85%"
-        }
+          start: "top 85%",
+        },
       });
     }, gridRef);
 
@@ -33,16 +33,28 @@ export default function ProductGrid({ products, title, description }) {
   }, [products]);
 
   return (
-    <section className="mx-auto max-w-6xl px-5 py-16">
+    <section className="mx-auto max-w-7xl px-5 py-16">
       {title && (
         <div className="mb-10 text-center">
-          <h2 className="font-display text-2xl text-walnut md:text-3xl">{title}</h2>
-          {description && <p className="mt-2 font-body text-sm text-walnut/60">{description}</p>}
+          <p className="font-body text-xs font-semibold uppercase tracking-[.18em] text-sienna">
+            Current workshop batch
+          </p>
+          <h2 className="mt-2 font-display text-4xl leading-none text-[#1c1814] md:text-5xl">
+            {title}
+          </h2>
+          {description && (
+            <p className="mx-auto mt-3 max-w-xl font-body text-sm leading-6 text-walnut/60">
+              {description}
+            </p>
+          )}
           <WoodRingDivider className="mt-4" />
         </div>
       )}
 
-      <div ref={gridRef} className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
+      <div
+        ref={gridRef}
+        className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4"
+      >
         {products.map((product) => (
           <div key={product.id} data-card>
             <ProductCard product={product} />

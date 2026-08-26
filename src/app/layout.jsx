@@ -1,4 +1,4 @@
-import { Fraunces, Work_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Cormorant_Garamond, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -7,17 +7,16 @@ import CartDrawer from "@/components/cart/CartDrawer";
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
 import WhatsAppWidget from "@/components/contact/WhatsAppWidget";
 
-const fraunces = Fraunces({
+const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
 });
 
-const workSans = Work_Sans({
+const bodyFont = Inter({
   subsets: ["latin"],
-  variable: "--font-worksans",
-  weight: ["400", "500", "600"],
+  variable: "--font-body",
+  weight: ["400", "500", "600", "700"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -57,7 +56,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${workSans.variable} ${plexMono.variable}`}
+      className={`${displayFont.variable} ${bodyFont.variable} ${plexMono.variable}`}
     >
       <body className="font-body">
         <SmoothScrollProvider>
