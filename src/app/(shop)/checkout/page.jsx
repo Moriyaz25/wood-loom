@@ -74,16 +74,25 @@ export default function CheckoutPage() {
     event.preventDefault();
     if (!items.length || submitting) return;
     const validationErrors = {};
-    if (form.customerName.trim().length < 2) validationErrors.customerName = "Enter your full name";
-    if (!/^[6-9][0-9]{9}$/.test(form.phone)) validationErrors.phone = "Enter a valid 10-digit Indian mobile number";
-    if (form.addressLine1.trim().length < 4) validationErrors.addressLine1 = "Enter house, street and area";
+    if (form.customerName.trim().length < 2)
+      validationErrors.customerName = "Enter your full name";
+    if (!/^[6-9][0-9]{9}$/.test(form.phone))
+      validationErrors.phone = "Enter a valid 10-digit Indian mobile number";
+    if (form.addressLine1.trim().length < 4)
+      validationErrors.addressLine1 = "Enter house, street and area";
     if (form.city.trim().length < 2) validationErrors.city = "Enter your city";
-    if (form.state.trim().length < 2) validationErrors.state = "Enter your state";
-    if (!/^[1-9][0-9]{5}$/.test(form.pincode)) validationErrors.pincode = "Enter a valid 6-digit PIN code";
-    if (!paymentReference.trim()) validationErrors.paymentReference = "Enter the UPI transaction/reference number";
+    if (form.state.trim().length < 2)
+      validationErrors.state = "Enter your state";
+    if (!/^[1-9][0-9]{5}$/.test(form.pincode))
+      validationErrors.pincode = "Enter a valid 6-digit PIN code";
+    if (!paymentReference.trim())
+      validationErrors.paymentReference =
+        "Enter the UPI transaction/reference number";
     setFieldErrors(validationErrors);
     if (Object.keys(validationErrors).length) {
-      document.querySelector(`[name="${Object.keys(validationErrors)[0]}"]`)?.focus();
+      document
+        .querySelector(`[name="${Object.keys(validationErrors)[0]}"]`)
+        ?.focus();
       return;
     }
     setSubmitting(true);
@@ -160,8 +169,13 @@ export default function CheckoutPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 sm:py-14">
-      <nav aria-label="Checkout progress" className="mb-8 grid grid-cols-3 overflow-hidden rounded-full border border-walnut/10 bg-white p-1 font-body text-[10px] font-semibold uppercase tracking-[.12em] text-walnut/45 sm:text-xs">
-        <span className="rounded-full bg-walnut px-3 py-2.5 text-center text-ivory">1 · Address</span>
+      <nav
+        aria-label="Checkout progress"
+        className="mb-8 grid grid-cols-3 overflow-hidden rounded-full border border-walnut/10 bg-white p-1 font-body text-[10px] font-semibold uppercase tracking-[.12em] text-walnut/45 sm:text-xs"
+      >
+        <span className="rounded-full bg-walnut px-3 py-2.5 text-center text-ivory">
+          1 · Address
+        </span>
         <span className="px-3 py-2.5 text-center text-walnut">2 · Payment</span>
         <span className="px-3 py-2.5 text-center">3 · Confirm</span>
       </nav>
@@ -198,7 +212,12 @@ export default function CheckoutPage() {
                 key={key}
                 className={`font-body text-xs text-walnut/60 ${key.startsWith("address") ? "sm:col-span-2" : ""}`}
               >
-                {label}{required && <span className="ml-1 text-sienna" aria-hidden="true">*</span>}
+                {label}
+                {required && (
+                  <span className="ml-1 text-sienna" aria-hidden="true">
+                    *
+                  </span>
+                )}
                 <input
                   name={key}
                   type={type}
@@ -208,17 +227,32 @@ export default function CheckoutPage() {
                   }
                   autoComplete={autocomplete[key]}
                   value={form[key]}
-                  maxLength={key === "phone" ? 10 : key === "pincode" ? 6 : undefined}
-                  pattern={key === "phone" ? "[6-9][0-9]{9}" : key === "pincode" ? "[1-9][0-9]{5}" : undefined}
+                  maxLength={
+                    key === "phone" ? 10 : key === "pincode" ? 6 : undefined
+                  }
+                  pattern={
+                    key === "phone"
+                      ? "[6-9][0-9]{9}"
+                      : key === "pincode"
+                        ? "[1-9][0-9]{5}"
+                        : undefined
+                  }
                   onChange={(event) => {
-                    const value = key === "phone" || key === "pincode" ? event.target.value.replace(/\D/g, "") : event.target.value;
+                    const value =
+                      key === "phone" || key === "pincode"
+                        ? event.target.value.replace(/\D/g, "")
+                        : event.target.value;
                     setForm((current) => ({ ...current, [key]: value }));
                     setFieldErrors((current) => ({ ...current, [key]: "" }));
                   }}
                   aria-invalid={Boolean(fieldErrors[key])}
                   className={`mt-1.5 block w-full rounded-xl border bg-white px-4 py-3.5 text-sm text-walnut outline-none transition focus:border-sienna focus:ring-2 focus:ring-sienna/10 ${fieldErrors[key] ? "border-red-500" : "border-walnut/15"}`}
                 />
-                {fieldErrors[key] && <span className="mt-1 block text-[11px] text-red-600">{fieldErrors[key]}</span>}
+                {fieldErrors[key] && (
+                  <span className="mt-1 block text-[11px] text-red-600">
+                    {fieldErrors[key]}
+                  </span>
+                )}
               </label>
             ))}
             <label className="font-body text-xs text-walnut/60 sm:col-span-2">
@@ -248,32 +282,101 @@ export default function CheckoutPage() {
           <div className="mt-8 border-t border-walnut/10 pt-7">
             <div className="flex flex-wrap items-end justify-between gap-2">
               <div>
-                <p className="font-data text-[10px] uppercase tracking-[.18em] text-sienna">Payment</p>
-                <h2 className="mt-1 font-display text-2xl text-walnut">Choose how to pay</h2>
+                <p className="font-data text-[10px] uppercase tracking-[.18em] text-sienna">
+                  Payment
+                </p>
+                <h2 className="mt-1 font-display text-2xl text-walnut">
+                  Choose how to pay
+                </h2>
               </div>
-              <span className="font-body text-[11px] text-walnut/45">Secure · No card data stored</span>
+              <span className="font-body text-[11px] text-walnut/45">
+                Secure · No card data stored
+              </span>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <PaymentChoice active={paymentMethod === "UPI"} onClick={() => setPaymentMethod("UPI")} icon="UPI" title="UPI / QR" description="Pay using any UPI app" />
-              <PaymentChoice disabled icon="CARD" title="Credit / Debit Card" description="Gateway setup required" />
+              <PaymentChoice
+                active={paymentMethod === "UPI"}
+                onClick={() => setPaymentMethod("UPI")}
+                icon="UPI"
+                title="UPI / QR"
+                description="Pay using any UPI app"
+              />
+              <PaymentChoice
+                disabled
+                icon="CARD"
+                title="Credit / Debit Card"
+                description="Gateway setup required"
+              />
             </div>
             <div className="mt-4 grid items-center gap-5 rounded-2xl border border-sienna/15 bg-white p-4 sm:grid-cols-[180px_1fr] sm:p-5">
               <div className="mx-auto overflow-hidden rounded-xl border border-walnut/10 bg-[#f2f4fb]">
-                <Image src="/images/woodloom-upi-qr.jpeg" alt="Scan to pay WOODLOOM using UPI" width={360} height={480} className="h-auto w-full" />
+                <Image
+                  src="/images/woodloom-upi-qr.jpeg"
+                  alt="Scan to pay WOODLOOM using UPI"
+                  width={360}
+                  height={480}
+                  className="h-auto w-full"
+                />
               </div>
               <div>
                 <p className="font-display text-xl text-walnut">Scan and pay</p>
-                <p className="mt-2 font-body text-xs leading-5 text-walnut/55">Use Google Pay, PhonePe, Paytm or any UPI app. Pay the exact order total shown in the summary.</p>
+                <p className="mt-2 font-body text-xs leading-5 text-walnut/55">
+                  Use Google Pay, PhonePe, Paytm or any UPI app. Pay the exact
+                  order total shown in the summary.
+                </p>
                 <div className="mt-4 flex items-center gap-2 rounded-xl bg-sand/70 p-2 pl-3">
-                  <code className="min-w-0 flex-1 truncate font-data text-xs text-walnut">{UPI_ID}</code>
-                  <button type="button" onClick={async () => { await navigator.clipboard.writeText(UPI_ID); setCopied(true); setTimeout(() => setCopied(false), 1800); }} className="rounded-lg bg-walnut px-3 py-2 font-body text-[10px] font-semibold uppercase tracking-wider text-ivory">{copied ? "Copied" : "Copy"}</button>
+                  <code className="min-w-0 flex-1 truncate font-data text-xs text-walnut">
+                    {UPI_ID}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(UPI_ID);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1800);
+                    }}
+                    className="rounded-lg bg-walnut px-3 py-2 font-body text-[10px] font-semibold uppercase tracking-wider text-ivory"
+                  >
+                    {copied ? "Copied" : "Copy"}
+                  </button>
                 </div>
-                <a href={`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent("Mo Riyaz")}&am=${productSubtotal + shippingTotal}&cu=INR`} className="mt-3 block rounded-full border border-walnut/20 px-4 py-3 text-center font-body text-xs font-semibold text-walnut sm:hidden">Open UPI app</a>
+                <p className="mt-3 rounded-xl bg-sand/45 px-3 py-2 font-body text-[11px] leading-5 text-walnut/55">
+                  Best option: scan QR or copy UPI ID. Some banks block direct
+                  browser-to-UPI links, so app opening is only a fallback.
+                </p>
+                <a
+                  href={`upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent("Mo Riyaz")}&cu=INR`}
+                  className="mt-3 block rounded-full border border-walnut/20 px-4 py-3 text-center font-body text-xs font-semibold text-walnut sm:hidden"
+                >
+                  Try opening UPI app
+                </a>
                 <label className="mt-4 block font-body text-xs text-walnut/60">
                   UPI transaction/reference number
                   <span className="ml-1 text-sienna">*</span>
-                  <input name="paymentReference" required value={paymentReference} onChange={(event) => { setPaymentReference(event.target.value.replace(/[^a-zA-Z0-9-]/g, "").slice(0, 80)); setFieldErrors((current) => ({ ...current, paymentReference: "" })); }} placeholder="Enter after payment" aria-invalid={Boolean(fieldErrors.paymentReference)} className={`mt-1.5 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-walnut outline-none focus:border-sienna focus:ring-2 focus:ring-sienna/10 ${fieldErrors.paymentReference ? "border-red-500" : "border-walnut/15"}`} />
-                  {fieldErrors.paymentReference && <span className="mt-1 block text-[11px] text-red-600">{fieldErrors.paymentReference}</span>}
+                  <input
+                    name="paymentReference"
+                    required
+                    value={paymentReference}
+                    onChange={(event) => {
+                      setPaymentReference(
+                        event.target.value
+                          .replace(/[^a-zA-Z0-9-]/g, "")
+                          .slice(0, 80),
+                      );
+                      setFieldErrors((current) => ({
+                        ...current,
+                        paymentReference: "",
+                      }));
+                    }}
+                    placeholder="Enter after payment"
+                    aria-invalid={Boolean(fieldErrors.paymentReference)}
+                    className={`mt-1.5 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-walnut outline-none focus:border-sienna focus:ring-2 focus:ring-sienna/10 ${fieldErrors.paymentReference ? "border-red-500" : "border-walnut/15"}`}
+                  />
+                  {fieldErrors.paymentReference && (
+                    <span className="mt-1 block text-[11px] text-red-600">
+                      {fieldErrors.paymentReference}
+                    </span>
+                  )}
                 </label>
               </div>
             </div>
@@ -327,7 +430,9 @@ export default function CheckoutPage() {
               disabled={submitting}
               className="mt-6 w-full rounded-full bg-walnut px-5 py-3.5 font-body text-sm font-semibold text-ivory transition hover:bg-sienna disabled:cursor-wait disabled:opacity-60"
             >
-              {submitting ? "Creating secure order…" : `Continue with ${paymentMethod === "UPI" ? "UPI" : "card"}`}
+              {submitting
+                ? "Creating secure order…"
+                : `Continue with ${paymentMethod === "UPI" ? "UPI" : "card"}`}
             </button>
           ) : (
             <Link
@@ -338,7 +443,8 @@ export default function CheckoutPage() {
             </Link>
           )}
           <p className="mt-4 text-center font-body text-xs leading-5 text-walnut/45">
-            Payment remains pending until the configured payment flow confirms it.
+            Payment remains pending until the configured payment flow confirms
+            it.
           </p>
         </aside>
       </form>
@@ -346,7 +452,14 @@ export default function CheckoutPage() {
   );
 }
 
-function PaymentChoice({ active, onClick, icon, title, description, disabled = false }) {
+function PaymentChoice({
+  active,
+  onClick,
+  icon,
+  title,
+  description,
+  disabled = false,
+}) {
   return (
     <button
       type="button"
@@ -356,11 +469,19 @@ function PaymentChoice({ active, onClick, icon, title, description, disabled = f
       className={`rounded-2xl border p-4 text-left transition ${active ? "border-sienna bg-white shadow-carve ring-2 ring-sienna/10" : "border-walnut/10 bg-white/60 hover:border-walnut/25"} disabled:cursor-not-allowed disabled:opacity-45`}
     >
       <span className="flex items-center justify-between gap-3">
-        <span className="rounded-lg bg-walnut px-2.5 py-1 font-data text-[9px] tracking-wider text-ivory">{icon}</span>
-        <span className={`h-4 w-4 rounded-full border-2 ${active ? "border-sienna bg-sienna shadow-[inset_0_0_0_3px_white]" : "border-walnut/25"}`} />
+        <span className="rounded-lg bg-walnut px-2.5 py-1 font-data text-[9px] tracking-wider text-ivory">
+          {icon}
+        </span>
+        <span
+          className={`h-4 w-4 rounded-full border-2 ${active ? "border-sienna bg-sienna shadow-[inset_0_0_0_3px_white]" : "border-walnut/25"}`}
+        />
       </span>
-      <span className="mt-4 block font-body text-sm font-semibold text-walnut">{title}</span>
-      <span className="mt-1 block font-body text-xs text-walnut/50">{description}</span>
+      <span className="mt-4 block font-body text-sm font-semibold text-walnut">
+        {title}
+      </span>
+      <span className="mt-1 block font-body text-xs text-walnut/50">
+        {description}
+      </span>
     </button>
   );
 }

@@ -3,13 +3,14 @@ import Image from "next/image";
 import { db } from "@/lib/db";
 import BannerCarousel from "@/components/banners/BannerCarousel";
 import ProductGrid from "@/components/product/ProductGrid";
+import { getHomeContent } from "@/lib/homeContent";
 
 export const dynamic = "force-dynamic";
 
 async function getData() {
   try {
     const now = new Date();
-    const [banners, featured, categories] = await Promise.all([
+    const [banners, featured, categories, homeContent] = await Promise.all([
       db.banner.findMany({
         where: {
           position: "HERO",
@@ -32,19 +33,25 @@ async function getData() {
         include: { _count: { select: { products: true } } },
         orderBy: { name: "asc" },
       }),
+      getHomeContent(),
     ]);
-    return { banners, featured, categories };
+    return { banners, featured, categories, homeContent };
   } catch (error) {
     console.error(
       "Homepage data is temporarily unavailable:",
       error instanceof Error ? error.message : error,
     );
-    return { banners: [], featured: [], categories: [] };
+    return {
+      banners: [],
+      featured: [],
+      categories: [],
+      homeContent: await getHomeContent(),
+    };
   }
 }
 
 export default async function HomePage() {
-  const { banners, featured, categories } = await getData();
+  const { banners, featured, categories, homeContent } = await getData();
 
   return (
     <div>
@@ -57,12 +64,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto grid max-w-7xl grid-cols-1 border-y border-walnut/10 bg-white/45 px-5 py-2 sm:grid-cols-2 md:grid-cols-4">
-        {[
-          ["MADE BY HAND", "Crafted by skilled artisans"],
-          ["SEASONED WOOD", "Selected for lasting quality"],
-          ["SMALL BATCH", "No mass production"],
-          ["WORLDWIDE", "Ships from India"],
-        ].map(([title, text]) => (
+        {homeContent.trust.map(([title, text]) => (
           <div
             key={title}
             className="flex items-center gap-3 border-b border-walnut/10 px-2 py-4 last:border-b-0 sm:border-b-0 sm:odd:border-r md:border-r md:last:border-r-0"
@@ -89,21 +91,20 @@ export default async function HomePage() {
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-body text-xs font-semibold uppercase tracking-[.18em] text-sienna">
-              Contemporary Indian Woodcraft
+              {homeContent.collection.eyebrow}
             </p>
             <Link
               href="/products"
               className="group mt-3 inline-flex items-center gap-4 font-display text-5xl leading-none text-[#1c1814] md:text-6xl"
             >
-              Shop by collection
+              {homeContent.collection.title}
               <span className="transition-transform group-hover:translate-x-2">
                 →
               </span>
             </Link>
           </div>
           <p className="max-w-md font-body text-sm leading-7 text-walnut/60">
-            Crafted by nature. Made for home. Wooden tableware, kitchenware and
-            home objects for slow, lasting rituals.
+            {homeContent.collection.description}
           </p>
         </div>
         <Link
@@ -111,7 +112,7 @@ export default async function HomePage() {
           className="relative mt-9 block h-[260px] overflow-hidden bg-sand sm:h-[360px] lg:h-[460px]"
         >
           <Image
-            src="https://res.cloudinary.com/h13umivj/image/upload/v1787468919/woodloom/site/collection-collage-v1.png"
+            src={homeContent.collection.image}
             alt="WOODLOOM handcrafted wooden collection"
             fill
             className="object-cover transition duration-700 hover:scale-[1.02]"
@@ -137,69 +138,34 @@ export default async function HomePage() {
       <section className="bg-white">
         <ProductGrid
           products={featured}
-          title="Top Picks"
-          description="Hand-turned pieces selected from the current workshop batch"
+          title={homeContent.topPicks.title}
+          description={homeContent.topPicks.description}
         />
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <Heading
-          eyebrow="The Woodloom Edit"
-          title="Pieces selected for slow mornings, warm gatherings and everyday rituals."
+          eyebrow={homeContent.edit.eyebrow}
+          title={homeContent.edit.title}
         />
         <div className="mt-9 grid gap-4 md:grid-cols-3">
-          <Collection
-            href="/products"
-            title="Morning Rituals"
-            text="Coffee · Tea · Breakfast"
-            image="/images/carved-serving-tray-v1.png"
-          />
-          <Collection
-            href="/products"
-            title="Gather & Serve"
-            text="Trays · Bowls · Servingware"
-            image="/images/hero-craft-v1.png"
-          />
-          <Collection
-            href="/products?category=home-decor"
-            title="Home & Storage"
-            text="Boxes · Organizers · Decor"
-            image="/images/walnut-chapati-box-v1.png"
-          />
+          {homeContent.edit.categories.map((item) => (
+            <Collection key={item.title} {...item} />
+          ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <Heading
-          eyebrow="Why WOODLOOM"
-          title="Craft you can feel. Quality you can use."
+          eyebrow={homeContent.why.eyebrow}
+          title={homeContent.why.title}
         />
         <div className="mt-10 grid gap-10">
-          <Reason
-            n="01"
-            title="Seasoned Wood"
-            image="/images/walnut-chapati-box-v1.png"
-          >
-            Built to age beautifully, with selected wood and restrained finishes
-            made for daily use.
-          </Reason>
-          <Reason
-            n="02"
-            title="No Two Pieces Repeat"
-            image="/images/carved-serving-tray-v1.png"
-            reverse
-          >
-            Every grain tells its own story, so each object carries a quiet
-            variation of tone, line and hand.
-          </Reason>
-          <Reason
-            n="03"
-            title="Made For Everyday"
-            image="/images/hero-craft-v1.png"
-          >
-            Beautiful enough to display. Practical enough to use for breakfast,
-            hosting and everyday rituals.
-          </Reason>
+          {homeContent.why.blocks.map((item) => (
+            <Reason key={item.n} {...item}>
+              {item.text}
+            </Reason>
+          ))}
         </div>
       </section>
 
@@ -207,8 +173,8 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:items-center">
           <div className="relative min-h-[360px] overflow-hidden rounded-xl shadow-[0_24px_60px_rgba(0,0,0,.22)]">
             <Image
-              src="/images/hero-craft-v1.png"
-              alt="Woodloom wooden bowl and tray"
+              src={homeContent.story.image}
+              alt="Woodloom craft story"
               fill
               className="object-cover"
               sizes="(max-width:768px) 100vw, 50vw"
@@ -216,42 +182,39 @@ export default async function HomePage() {
           </div>
           <div className="md:px-6">
             <p className="font-body text-xs uppercase tracking-[.18em] text-white/55">
-              Our story
+              {homeContent.story.eyebrow}
             </p>
             <h2 className="mt-3 font-display text-5xl uppercase leading-[.9] md:text-7xl">
-              From Nagina,
-              <br />
-              to your home.
+              {homeContent.story.title.split("\n").map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
             </h2>
             <p className="mt-6 font-body leading-7 text-white/68">
-              Every Woodloom piece begins with carefully selected wood and
-              skilled hands in Nagina, India.
+              {homeContent.story.text}
             </p>
             <Link
-              href="/about"
+              href={homeContent.story.ctaLink}
               className="mt-8 inline-flex rounded-full bg-white px-7 py-3.5 font-body text-xs font-semibold uppercase tracking-[.14em] text-walnut-dark"
             >
-              Discover our story →
+              {homeContent.story.ctaLabel}
             </Link>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16">
-        <Heading eyebrow="Craft process" title="From workshop to your home" />
+        <Heading
+          eyebrow={homeContent.process.eyebrow}
+          title={homeContent.process.title}
+        />
         <div className="mt-10 grid gap-0 border-y border-walnut/10 md:grid-cols-4">
-          <Step n="01" title="Select">
-            Material carefully selected
-          </Step>
-          <Step n="02" title="Shape">
-            Shaped by skilled hands
-          </Step>
-          <Step n="03" title="Finish">
-            Sanded, seasoned and finished
-          </Step>
-          <Step n="04" title="Pack">
-            Packed with care
-          </Step>
+          {homeContent.process.steps.map(([n, title, text]) => (
+            <Step key={n} n={n} title={title}>
+              {text}
+            </Step>
+          ))}
         </div>
       </section>
 
@@ -259,14 +222,13 @@ export default async function HomePage() {
         <div className="grid overflow-hidden rounded-xl bg-walnut-dark text-white md:grid-cols-[1.05fr_.95fr]">
           <div className="px-7 py-14 md:px-14 md:py-20">
             <p className="font-body text-xs uppercase tracking-[.18em] text-white/55">
-              Housewarmings · Weddings · Festive · Corporate
+              {homeContent.gifting.eyebrow}
             </p>
             <h2 className="mt-4 max-w-2xl font-display text-5xl uppercase leading-[.9] md:text-7xl">
-              A gift made to last.
+              {homeContent.gifting.title}
             </h2>
             <p className="mt-5 max-w-xl font-body text-sm leading-7 text-white/68">
-              Thoughtful wooden pieces for weddings, housewarmings and
-              celebrations.
+              {homeContent.gifting.text}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -285,7 +247,7 @@ export default async function HomePage() {
           </div>
           <div className="relative min-h-[320px]">
             <Image
-              src="/images/walnut-chapati-box-v1.png"
+              src={homeContent.gifting.image}
               alt="WOODLOOM wooden gift box"
               fill
               className="object-cover"
@@ -297,27 +259,11 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-5 pb-20">
         <Heading
-          eyebrow="Loved in real homes"
-          title="The grain is even more beautiful in person."
+          eyebrow={homeContent.reviews.eyebrow}
+          title={homeContent.reviews.title}
         />
         <div className="mt-9 grid gap-4 md:grid-cols-3">
-          {[
-            [
-              "Aditi",
-              "New Delhi",
-              "Beautiful finish and very thoughtful packing.",
-            ],
-            [
-              "Rohan",
-              "Mumbai",
-              "It feels handmade in the best way, solid and warm.",
-            ],
-            [
-              "Meera",
-              "Bengaluru",
-              "The tray has become part of our weekend table.",
-            ],
-          ].map(([name, city, text]) => (
+          {homeContent.reviews.items.map(([name, city, text]) => (
             <article
               key={name}
               className="border border-walnut/10 bg-white p-6"
@@ -339,22 +285,15 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-5 pb-20">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <Heading
-            eyebrow="Woodloom in your home"
-            title="Made for rituals, hosting and gifting."
+            eyebrow={homeContent.ugc.eyebrow}
+            title={homeContent.ugc.title}
           />
           <p className="font-body text-xs font-semibold uppercase tracking-[.16em] text-walnut/55">
-            @WOODLOOM
+            {homeContent.ugc.handle}
           </p>
         </div>
         <div className="mt-9 grid grid-cols-2 gap-3 md:grid-cols-6">
-          {[
-            "/images/carved-serving-tray-v1.png",
-            "/images/hero-craft-v1.png",
-            "/images/walnut-chapati-box-v1.png",
-            "/images/collection-collage-v1.png",
-            "/images/carved-serving-tray-v1.png",
-            "/images/hero-craft-v1.png",
-          ].map((src, index) => (
+          {homeContent.ugc.images.map((src, index) => (
             <div
               key={`${src}-${index}`}
               className="relative aspect-[4/5] overflow-hidden bg-sand md:odd:mt-8"

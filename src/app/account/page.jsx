@@ -105,11 +105,13 @@ export default function AccountPage() {
           )}
           {tab === "orders" && (
             <div className="space-y-4">
-              <h2 className="font-display text-2xl text-walnut">Your orders</h2>
+              <h2 className="font-display text-2xl text-walnut">
+                Track your orders
+              </h2>
               {data.orders.map((o) => (
                 <article
                   key={o.id}
-                  className="card-notch-sm bg-ivory p-5 shadow-carve"
+                  className="rounded-xl border border-walnut/10 bg-white p-5 shadow-carve"
                 >
                   <div className="flex justify-between">
                     <div>
@@ -130,6 +132,16 @@ export default function AccountPage() {
                   <p className="mt-3 font-body text-xs text-walnut/60">
                     {o.items.map((i) => `${i.name} × ${i.quantity}`).join(", ")}
                   </p>
+                  <OrderTimeline status={o.status} />
+                  <div className="mt-4 grid gap-2 rounded-xl bg-sand/35 p-3 font-body text-xs text-walnut/60 sm:grid-cols-2">
+                    <p>Payment: {o.paymentStatus || "PENDING"}</p>
+                    <p>Method: {o.paymentMethod || "UPI"}</p>
+                    {o.paymentReference && (
+                      <p className="sm:col-span-2">
+                        UPI ref: {o.paymentReference}
+                      </p>
+                    )}
+                  </div>
                 </article>
               ))}
               {!data.orders.length && <Empty text="No orders yet." />}
@@ -192,6 +204,37 @@ export default function AccountPage() {
           )}
         </section>
       </div>
+    </div>
+  );
+}
+function OrderTimeline({ status }) {
+  const steps = ["PENDING", "CONFIRMED", "PACKED", "SHIPPED", "DELIVERED"];
+  const activeIndex =
+    status === "CANCELLED" ? -1 : Math.max(0, steps.indexOf(status));
+  return (
+    <div className="mt-5">
+      <div className="grid grid-cols-5 gap-1">
+        {steps.map((step, index) => {
+          const active = index <= activeIndex;
+          return (
+            <div key={step} className="min-w-0">
+              <div
+                className={`h-1 rounded-full ${active ? "bg-walnut" : "bg-walnut/12"}`}
+              />
+              <p
+                className={`mt-2 truncate font-body text-[10px] uppercase tracking-[.1em] ${active ? "text-walnut" : "text-walnut/38"}`}
+              >
+                {step.toLowerCase()}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      {status === "CANCELLED" && (
+        <p className="mt-3 font-body text-xs text-sienna">
+          This order has been cancelled.
+        </p>
+      )}
     </div>
   );
 }
