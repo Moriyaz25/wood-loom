@@ -50,10 +50,10 @@ export default function AdminOrdersPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl text-[#1c1814]">Orders</h1>
-      <p className="mt-1 font-body text-sm text-walnut/55">
+      <div className="rounded-2xl bg-[#21150f] p-6 text-white shadow-xl"><p className="font-data text-[10px] font-semibold uppercase tracking-[.2em] text-[#f38a45]">Fulfilment desk</p><h1 className="mt-1 font-display text-4xl text-white">Orders</h1>
+      <p className="mt-2 font-body text-sm text-white/65">
         Click any order to view customer, address, payment reference and items.
-      </p>
+      </p></div>
 
       {loading && (
         <p className="mt-6 font-body text-sm text-walnut/50">Loading...</p>
@@ -65,7 +65,7 @@ export default function AdminOrdersPage() {
           return (
             <article
               key={order.id}
-              className="border border-walnut/10 bg-white p-4 shadow-carve"
+              className="rounded-2xl border border-[#4a2816]/15 border-l-4 border-l-[#087f5b] bg-white p-5 shadow-[0_10px_28px_rgba(42,27,18,.12)]"
             >
               <button
                 type="button"
@@ -85,7 +85,7 @@ export default function AdminOrdersPage() {
                     <span className="font-body text-sm font-semibold text-walnut">
                       ₹{order.total.toLocaleString("en-IN")}
                     </span>
-                    <span className="rounded-full bg-sand px-3 py-1 font-body text-[11px] text-walnut/70">
+                    <span className="rounded-full bg-[#087f5b] px-3 py-1.5 font-body text-[11px] font-semibold text-white">
                       {order.status}
                     </span>
                     <span className="font-body text-xs text-sienna">

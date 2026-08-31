@@ -109,23 +109,24 @@ export default function AdminBannersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between rounded-2xl bg-[#21150f] p-6 text-white shadow-xl">
         <div>
-          <h1 className="font-display text-2xl text-walnut">Banners & Ads</h1>
-          <p className="mt-1 font-body text-xs text-walnut/50">
+          <p className="font-data text-[10px] font-semibold uppercase tracking-[.2em] text-[#f38a45]">Campaign management</p>
+          <h1 className="mt-1 font-display text-4xl text-white">Banners & Ads</h1>
+          <p className="mt-2 font-body text-xs text-white/65">
             Runs festival campaigns and per-product promotions across the site — no code changes needed.
           </p>
         </div>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="focus-ring rounded-full bg-sienna px-4 py-2 font-body text-sm text-ivory shadow-carve"
+          className="focus-ring rounded-full bg-[#d45d12] px-5 py-3 font-body text-sm font-bold text-white shadow-lg transition hover:bg-[#ee7726]"
         >
           {showForm ? "Cancel" : "+ New banner"}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="card-notch-sm mt-6 space-y-3 bg-ivory p-6 shadow-carve">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4 rounded-2xl border-2 border-[#d46b25]/25 bg-[#fffaf4] p-6 shadow-[0_18px_45px_rgba(42,27,18,.14)]">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Title" value={form.title} onChange={(v) => updateField("title", v)} required />
             <Field label="Campaign label (optional)" value={form.festivalTag} onChange={(v) => updateField("festivalTag", v)} placeholder="New collection, Limited edition..." />
@@ -139,7 +140,7 @@ export default function AdminBannersPage() {
               <select
                 value={form.position}
                 onChange={(e) => updateField("position", e.target.value)}
-                className="focus-ring mt-1 w-full rounded-lg border border-walnut/15 bg-ivory px-3 py-2 font-body text-sm shadow-carve-inset"
+                className="focus-ring mt-1.5 w-full rounded-xl border border-[#4a2816]/25 bg-white px-3 py-2.5 font-body text-sm text-[#21150f]"
               >
                 {POSITIONS.map((p) => (
                   <option key={p} value={p}>{p.replace("_", " ")}</option>
@@ -152,7 +153,7 @@ export default function AdminBannersPage() {
               <select
                 value={form.productId}
                 onChange={(e) => updateField("productId", e.target.value)}
-                className="focus-ring mt-1 w-full rounded-lg border border-walnut/15 bg-ivory px-3 py-2 font-body text-sm shadow-carve-inset"
+                className="focus-ring mt-1.5 w-full rounded-xl border border-[#4a2816]/25 bg-white px-3 py-2.5 font-body text-sm text-[#21150f]"
               >
                 <option value="">None</option>
                 {products.map((p) => (
@@ -171,32 +172,32 @@ export default function AdminBannersPage() {
           <button
             type="submit"
             disabled={saving}
-            className="focus-ring rounded-full bg-walnut px-5 py-2 font-body text-sm text-ivory shadow-carve disabled:opacity-60"
+            className="focus-ring rounded-full bg-[#d45d12] px-6 py-3 font-body text-sm font-bold text-white shadow-lg hover:bg-[#ad4308] disabled:opacity-60"
           >
             {saving ? "Saving..." : "Save banner"}
           </button>
         </form>
       )}
 
-      <div className="mt-8 space-y-2">
+      <div className="mt-6 space-y-3">
         {banners.map((banner) => (
-          <div key={banner.id} className="card-notch-sm flex flex-wrap items-center justify-between gap-3 bg-ivory p-4 shadow-carve">
+          <div key={banner.id} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#4a2816]/15 border-l-4 border-l-[#d46b25] bg-white p-5 shadow-[0_10px_28px_rgba(42,27,18,.12)]">
             <div>
-              <p className="font-body text-sm text-walnut">
+              <p className="font-body text-base font-semibold text-[#21150f]">
                 {banner.title} {banner.festivalTag && <span className="font-data text-xs text-sienna">· {banner.festivalTag}</span>}
               </p>
-              <p className="font-data text-xs text-walnut/50">
+              <p className="mt-1 font-data text-xs font-medium text-[#765344]">
                 {banner.position} · priority {banner.priority} {banner.product && `· ${banner.product.name}`}
               </p>
             </div>
             <div className="flex items-center gap-4 font-body text-xs">
               <button
                 onClick={() => toggleActive(banner)}
-                className={`focus-ring rounded-full px-3 py-1 ${banner.active ? "bg-sage text-ivory" : "bg-sand text-walnut/60"}`}
+                className={`focus-ring rounded-full px-4 py-2 font-semibold ${banner.active ? "bg-[#087f5b] text-white shadow-sm" : "border border-[#d46b25]/40 bg-[#fff4e8] text-[#a84910]"}`}
               >
                 {banner.active ? "Active" : "Paused"}
               </button>
-              <button onClick={() => deleteBanner(banner.id)} className="focus-ring text-sienna hover:underline">
+              <button onClick={() => deleteBanner(banner.id)} className="focus-ring rounded-full border border-red-200 px-4 py-2 font-semibold text-red-700 transition hover:bg-red-700 hover:text-white">
                 Delete
               </button>
             </div>
@@ -211,14 +212,14 @@ export default function AdminBannersPage() {
 function Field({ label, value, onChange, type = "text", required, placeholder }) {
   return (
     <label className="block">
-      <span className="font-body text-xs text-walnut/60">{label}</span>
+      <span className="font-body text-xs font-semibold text-[#583522]">{label}</span>
       <input
         type={type}
         value={value}
         required={required}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="focus-ring mt-1 w-full rounded-lg border border-walnut/15 bg-ivory px-3 py-2 font-body text-sm shadow-carve-inset"
+        className="focus-ring mt-1.5 w-full rounded-xl border border-[#4a2816]/25 bg-white px-3 py-2.5 font-body text-sm text-[#21150f]"
       />
     </label>
   );

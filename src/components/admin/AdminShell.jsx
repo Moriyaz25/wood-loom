@@ -62,7 +62,7 @@ export default function AdminShell({ children }) {
         <AdminNav pathname={pathname} onLogout={handleLogout} />
       </aside>
 
-      <div className="min-w-0 flex-1 rounded-[24px] border border-[#2a1b12]/15 bg-white p-4 shadow-[0_24px_65px_rgba(42,27,18,.18)] sm:p-6">{children}</div>
+      <div className="wood-panel min-w-0 flex-1 rounded-[24px] border border-[#2a1b12]/15 p-4 shadow-[0_24px_65px_rgba(42,27,18,.18)] sm:p-6">{children}</div>
     </div>
   );
 }

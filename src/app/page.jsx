@@ -59,7 +59,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="mx-auto max-w-[1500px] bg-[#f7f3ec]">
+      <section className="wood-surface-rich mx-auto max-w-[1500px]">
         {banners.length ? (
           <BannerCarousel banners={banners} />
         ) : (
@@ -67,7 +67,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="mx-auto grid max-w-7xl grid-cols-1 border-y border-walnut/10 bg-white/45 px-5 py-2 sm:grid-cols-2 md:grid-cols-4">
+      <section className="wood-panel mx-auto grid max-w-7xl grid-cols-1 border-y border-walnut/15 px-5 py-2 shadow-[0_12px_35px_rgba(74,40,22,.08)] sm:grid-cols-2 md:grid-cols-4">
         {homeContent.trust.map(([title, text]) => (
           <div
             key={title}
@@ -140,7 +140,7 @@ export default async function HomePage() {
       </section>
 
       {gridProducts.length > 0 && (
-        <section className="bg-white">
+        <section className="wood-surface">
           <ProductGrid
             products={gridProducts}
             title={homeContent.topPicks.title}
@@ -153,7 +153,7 @@ export default async function HomePage() {
 
       {spotlightProduct && <CraftSpotlight product={spotlightProduct} />}
 
-      <section className="mx-auto max-w-7xl px-5 py-16">
+      <section className="wood-surface mx-auto max-w-7xl px-5 py-16">
         <Heading
           eyebrow={homeContent.edit.eyebrow}
           title={homeContent.edit.title}
@@ -165,7 +165,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-16">
+      <section className="wood-surface mx-auto max-w-7xl px-5 py-16">
         <Heading
           eyebrow={homeContent.why.eyebrow}
           title={homeContent.why.title}

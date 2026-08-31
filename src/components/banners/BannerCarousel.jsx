@@ -30,7 +30,7 @@ export default function BannerCarousel() {
         mx.set(0);
         my.set(0);
       }}
-      className="relative overflow-hidden bg-[#f7f3ec] px-5 py-8 sm:px-8 sm:py-10 md:min-h-[540px] md:px-10 lg:px-14"
+      className="wood-surface-rich relative overflow-hidden px-5 py-8 sm:px-8 sm:py-10 md:min-h-[540px] md:px-10 lg:px-14"
     >
       <div className="grid items-center gap-9 md:grid-cols-[44%_56%] md:gap-6">
         <motion.div

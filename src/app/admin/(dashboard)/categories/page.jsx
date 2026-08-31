@@ -80,18 +80,18 @@ export default function CategoriesPage() {
   }
   return (
     <div>
-      <div>
-        <p className="font-data text-xs uppercase tracking-[.2em] text-sienna">
+      <div className="rounded-2xl bg-[#21150f] p-6 text-white shadow-xl">
+        <p className="font-data text-xs font-semibold uppercase tracking-[.2em] text-[#f38a45]">
           Catalog structure
         </p>
-        <h1 className="mt-2 font-display text-3xl text-walnut">Categories</h1>
-        <p className="mt-2 font-body text-sm text-walnut/55">
+        <h1 className="mt-2 font-display text-4xl text-white">Categories</h1>
+        <p className="mt-2 font-body text-sm text-white/65">
           Create collections used by product forms and storefront filters.
         </p>
       </div>
       <form
         onSubmit={save}
-        className="mt-7 rounded-2xl bg-ivory p-6 shadow-carve"
+        className="mt-5 rounded-2xl border-2 border-[#d46b25]/25 bg-[#fffaf4] p-6 shadow-[0_18px_45px_rgba(42,27,18,.14)]"
       >
         <div className="grid gap-4 md:grid-cols-2">
           <Field
@@ -112,7 +112,7 @@ export default function CategoriesPage() {
               value={form.description}
               onChange={(e) => change("description", e.target.value)}
               rows={3}
-              className="mt-1 w-full rounded-xl border border-walnut/15 bg-white p-3 font-body text-sm"
+              className="mt-1.5 w-full rounded-xl border border-[#4a2816]/25 bg-white p-3 font-body text-sm text-[#21150f] outline-none focus:border-[#d46b25] focus:ring-2 focus:ring-[#d46b25]/15"
             />
           </label>
           <div className="md:col-span-2">
@@ -124,7 +124,7 @@ export default function CategoriesPage() {
         </div>
         {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
         <div className="mt-5 flex gap-3">
-          <button className="rounded-full bg-sienna px-6 py-2.5 font-body text-sm text-white">
+          <button className="rounded-full bg-[#d45d12] px-6 py-3 font-body text-sm font-bold text-white shadow-lg transition hover:bg-[#ad4308]">
             {editing ? "Update category" : "Create category"}
           </button>
           {editing && (
@@ -134,7 +134,7 @@ export default function CategoriesPage() {
                 setEditing(null);
                 setForm(blank);
               }}
-              className="rounded-full border px-5 text-sm"
+              className="rounded-full border border-[#4a2816]/25 bg-white px-5 text-sm font-semibold text-[#4a2816]"
             >
               Cancel
             </button>
@@ -145,21 +145,21 @@ export default function CategoriesPage() {
         {categories.map((c) => (
           <article
             key={c.id}
-            className="flex items-center justify-between rounded-2xl bg-ivory p-5 shadow-carve"
+            className="flex items-center justify-between rounded-2xl border border-[#4a2816]/15 border-l-4 border-l-[#d46b25] bg-white p-5 shadow-[0_10px_28px_rgba(42,27,18,.12)]"
           >
             <div>
-              <h2 className="font-display text-xl">{c.name}</h2>
-              <p className="font-body text-xs text-walnut/50">
+              <h2 className="font-display text-2xl font-semibold text-[#21150f]">{c.name}</h2>
+              <p className="mt-1 font-body text-xs font-medium text-[#765344]">
                 /{c.slug} · {c._count.products} products
               </p>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => edit(c)} className="text-sm text-sienna">
+              <button onClick={() => edit(c)} className="rounded-full bg-[#21150f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#d46b25]">
                 Edit
               </button>
               <button
                 onClick={() => remove(c)}
-                className="text-sm text-red-700"
+                className="rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-700 hover:text-white"
               >
                 Delete
               </button>
@@ -173,12 +173,12 @@ export default function CategoriesPage() {
 function Field({ label, value, onChange }) {
   return (
     <label>
-      <span className="font-body text-xs text-walnut/60">{label}</span>
+      <span className="font-body text-xs font-semibold text-[#583522]">{label}</span>
       <input
         required
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border border-walnut/15 bg-white px-4 py-3 font-body text-sm"
+        className="mt-1.5 w-full rounded-xl border border-[#4a2816]/25 bg-white px-4 py-3 font-body text-sm text-[#21150f] outline-none focus:border-[#d46b25] focus:ring-2 focus:ring-[#d46b25]/15"
       />
     </label>
   );
