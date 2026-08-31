@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ImageUploader from "@/components/admin/ImageUploader";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 const emptyForm = {
   title: "",
@@ -20,6 +21,7 @@ const emptyForm = {
 const POSITIONS = ["HERO", "STRIP", "PRODUCT_PAGE", "CATEGORY_TOP"];
 
 export default function AdminBannersPage() {
+  const confirmAction = useConfirmDialog();
   const [banners, setBanners] = useState([]);
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -54,7 +56,15 @@ export default function AdminBannersPage() {
   }
 
   async function deleteBanner(id) {
-    if (!confirm("Delete this banner?")) return;
+    const banner = banners.find((item) => item.id === id);
+    const confirmed = await confirmAction({
+      eyebrow: "Campaign removal",
+      title: `Delete ${banner?.title || "this banner"}?`,
+      description: "This campaign creative will be permanently removed from the admin panel and storefront.",
+      confirmLabel: "Delete banner",
+      cancelLabel: "Keep banner",
+    });
+    if (!confirmed) return;
     setBanners((prev) => prev.filter((b) => b.id !== id));
     await fetch(`/api/admin/banners/${id}`, { method: "DELETE" });
   }

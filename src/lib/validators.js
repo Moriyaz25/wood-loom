@@ -85,10 +85,7 @@ export const productSchema = productBaseSchema.refine(
   { message: "Compare-at price must exceed price", path: ["compareAtPrice"] },
 );
 
-export const productPatchSchema = productBaseSchema
-  .omit({ images: true })
-  .partial()
-  .strict();
+export const productPatchSchema = productBaseSchema.partial().strict();
 export const categorySchema = z
   .object({
     name: clean(2, 80),

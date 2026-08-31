@@ -4,17 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 
-const FREE_SHIPPING_TARGET = 5000;
-
 export default function CartPage() {
   const { items, updateQuantity, removeItem, subtotal } = useCartStore();
   const bagSubtotal = subtotal();
-  const shipping = items.reduce(
-    (sum, item) => sum + (item.shippingFee ?? 100) * item.quantity,
-    0,
-  );
-  const total = bagSubtotal + shipping;
-  const freeShippingLeft = Math.max(0, FREE_SHIPPING_TARGET - bagSubtotal);
 
   if (items.length === 0) {
     return (
@@ -47,9 +39,7 @@ export default function CartPage() {
           </h1>
         </div>
         <p className="font-body text-sm text-walnut/60">
-          {freeShippingLeft
-            ? `You're ₹${freeShippingLeft.toLocaleString("en-IN")} away from future free-shipping eligibility.`
-            : "Your bag is ready for checkout."}
+          Shipping is calculated and shown at checkout.
         </p>
       </div>
 
@@ -125,13 +115,11 @@ export default function CartPage() {
           </h2>
           <div className="mt-6 space-y-4 border-y border-walnut/10 py-5 font-body text-sm">
             <Row label="Subtotal" value={bagSubtotal} />
-            <Row label="Shipping" value={shipping} />
             <p className="text-xs leading-6 text-walnut/55">
-              Duties and taxes for international delivery can be configured when
-              worldwide checkout is enabled.
+              Shipping charges will be shown before you place your order.
             </p>
           </div>
-          <Row label="Total" value={total} large />
+          <Row label="Subtotal" value={bagSubtotal} large />
           <Link
             href="/checkout"
             className="focus-ring mt-6 block rounded-full bg-walnut-dark py-3.5 text-center font-body text-xs font-semibold uppercase tracking-[.14em] text-white shadow-carve"
@@ -146,7 +134,7 @@ export default function CartPage() {
           href="/checkout"
           className="focus-ring block rounded-full bg-walnut-dark py-3.5 text-center font-body text-xs font-semibold uppercase tracking-[.14em] text-white"
         >
-          Checkout · ₹{total.toLocaleString("en-IN")}
+          Continue to checkout
         </Link>
       </div>
     </div>

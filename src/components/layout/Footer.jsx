@@ -15,9 +15,9 @@ const groups = [
     title: "About",
     links: [
       ["/about", "Our Story"],
-      ["/about", "Craft"],
-      ["/care", "Materials"],
-      ["/faq", "Journal"],
+      ["/about#craft", "Our Craft"],
+      ["/care", "Wood Care"],
+      ["/faq", "FAQs"],
     ],
   },
   {
@@ -43,7 +43,7 @@ export default function Footer() {
               made in small batches in Nagina, India.
             </p>
             <p className="mt-8 font-body text-xs font-semibold uppercase tracking-[.18em] text-white/50">
-              India → Worldwide
+              Made in India · Delivered across India
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a
@@ -83,7 +83,7 @@ export default function Footer() {
         <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-7 font-body text-xs text-white/40 md:flex-row md:justify-between">
           <p>© {new Date().getFullYear()} WOODLOOM. Handmade in India.</p>
           <p>
-            Worldwide-ready shipping · Secure payments · Privacy-first accounts
+            Careful shipping · Secure accounts · Small-batch craft
           </p>
         </div>
       </div>

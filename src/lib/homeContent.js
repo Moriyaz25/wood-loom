@@ -15,7 +15,7 @@ export const defaultHomeContent = {
     ["MADE BY HAND", "Crafted by skilled artisans"],
     ["SEASONED WOOD", "Selected for lasting quality"],
     ["SMALL BATCH", "No mass production"],
-    ["WORLDWIDE", "Ships from India"],
+    ["ACROSS INDIA", "Packed and shipped with care"],
   ],
   topPicks: {
     title: "Top Picks",
@@ -112,9 +112,6 @@ export const defaultHomeContent = {
       "/images/carved-serving-tray-v1.png",
       "/images/hero-craft-v1.png",
       "/images/walnut-chapati-box-v1.png",
-      "/images/collection-collage-v1.png",
-      "/images/carved-serving-tray-v1.png",
-      "/images/hero-craft-v1.png",
     ],
   },
 };

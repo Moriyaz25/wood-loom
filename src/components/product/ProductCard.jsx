@@ -121,10 +121,6 @@ export default function ProductCard({ product }) {
               </span>
             )}
           </div>
-          <p className="mt-1 font-body text-[11px] text-walnut/45">
-            Shipping ₹{(product.shippingFee ?? 100).toLocaleString("en-IN")} per
-            item
-          </p>
         </div>
       </Link>
       <a

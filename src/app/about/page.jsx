@@ -28,6 +28,12 @@ const steps = [
     "Every piece is checked by hand and carefully packed to travel safely to your home.",
   ],
 ];
+const principles = [
+  ["Material first", "We begin with grain, density and intended use—not a trend forecast. The wood helps determine the final form."],
+  ["Made in small runs", "Smaller batches allow closer inspection, thoughtful finishing and less unnecessary inventory."],
+  ["Designed for rituals", "A tray should carry confidently, a bowl should feel balanced, and an object should be easy to live with."],
+  ["Age with character", "Real wood changes gently with light, touch and care. We see that patina as part of the object’s story."],
+];
 export default function AboutPage() {
   return (
     <div>
@@ -54,6 +60,16 @@ export default function AboutPage() {
             sizes="(max-width: 768px) 100vw, 55vw"
             className="object-cover"
           />
+        </div>
+      </section>
+      <section className="border-y border-walnut/10 bg-white/55">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 px-5 md:grid-cols-4">
+          {[["01", "Natural material"], ["02", "Small-batch process"], ["03", "Finished by hand"], ["04", "Made for daily use"]].map(([n, label]) => (
+            <div key={n} className="border-b border-walnut/10 px-4 py-7 even:border-l md:border-b-0 md:border-l md:first:border-l-0">
+              <p className="font-data text-xs text-sienna">{n}</p>
+              <p className="mt-2 font-body text-xs font-semibold uppercase tracking-[.14em] text-walnut">{label}</p>
+            </div>
+          ))}
         </div>
       </section>
       <section className="bg-walnut py-20 text-ivory">
@@ -86,7 +102,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-5 py-20">
+      <section id="craft" className="mx-auto max-w-6xl scroll-mt-28 px-5 py-20">
         <p className="text-center font-data text-xs uppercase tracking-[.22em] text-sienna">
           From timber to table
         </p>
@@ -104,6 +120,39 @@ export default function AboutPage() {
               <p className="mt-3 font-body text-sm leading-6 text-walnut/60">
                 {d}
               </p>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-5 pb-20">
+        <div className="grid overflow-hidden bg-walnut-dark text-ivory lg:grid-cols-[1.05fr_.95fr]">
+          <div className="relative min-h-[420px] lg:min-h-[620px]">
+            <Image src="/images/walnut-chapati-box-v1.png" alt="Natural wood grain and handcrafted joinery" fill sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+          </div>
+          <div className="self-center px-7 py-12 sm:px-12 lg:px-14">
+            <p className="font-data text-xs uppercase tracking-[.22em] text-sienna-light">Why wood</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">No two pieces need to look exactly alike.</h2>
+            <div className="mt-6 space-y-5 font-body text-sm leading-7 text-ivory/70">
+              <p>Grain is a record of growth. It can run straight, curl around a knot or shift in colour across a single surface. Our forms are intentionally quiet so natural variation remains visible.</p>
+              <p>Wood asks for participation. It benefits from being dried after washing, refreshed when it feels pale and kept away from prolonged heat or water. In return, it develops warmth and familiarity.</p>
+              <p>Product photographs guide you on form and finish. The piece that reaches you will carry its own grain pattern, tone and small evidence of handwork.</p>
+            </div>
+            <Link href="/care" className="mt-8 inline-flex rounded-full bg-ivory px-6 py-3 font-body text-xs font-semibold uppercase tracking-[.14em] text-walnut">Understand wood care</Link>
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-5 pb-20">
+        <div className="max-w-3xl">
+          <p className="font-data text-xs uppercase tracking-[.22em] text-sienna">Our design principles</p>
+          <h2 className="mt-3 font-display text-4xl leading-tight text-walnut md:text-5xl">Quiet objects. Thoughtful details. Honest material.</h2>
+        </div>
+        <div className="mt-10 grid border-y border-walnut/10 md:grid-cols-2">
+          {principles.map(([title, text], index) => (
+            <article key={title} className={`px-1 py-8 md:p-8 ${index % 2 ? "md:border-l" : ""} ${index < 2 ? "border-b border-walnut/10" : ""}`}>
+              <p className="font-data text-xs text-sienna">0{index + 1}</p>
+              <h3 className="mt-4 font-display text-3xl text-walnut">{title}</h3>
+              <p className="mt-3 max-w-md font-body text-sm leading-7 text-walnut/60">{text}</p>
             </article>
           ))}
         </div>

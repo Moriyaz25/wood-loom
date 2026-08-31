@@ -48,6 +48,23 @@ export default function CarePage() {
           </article>
         ))}
       </div>
+      <section className="mt-16 border-y border-walnut/10 py-12">
+        <div className="grid gap-8 md:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p className="font-data text-xs uppercase tracking-[.2em] text-sienna">A simple routine</p>
+            <h2 className="mt-3 font-display text-4xl text-walnut">Wash. Dry. Restore.</h2>
+          </div>
+          <ol className="grid gap-7 sm:grid-cols-3">
+            {[["01", "Wash briefly", "Use a soft sponge, mild soap and lukewarm water."], ["02", "Dry fully", "Towel-dry at once, then air-dry with both sides exposed."], ["03", "Oil lightly", "Apply food-safe mineral oil only when the surface feels dry."]].map(([n, title, text]) => (
+              <li key={n}>
+                <span className="font-data text-xs text-sienna">{n}</span>
+                <h3 className="mt-3 font-body text-sm font-semibold text-walnut">{title}</h3>
+                <p className="mt-2 font-body text-xs leading-6 text-walnut/60">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
       <section className="mt-16 grid gap-8 rounded-[28px] bg-walnut p-8 text-ivory md:grid-cols-2 md:p-12">
         <div>
           <h2 className="font-display text-3xl">What to avoid</h2>

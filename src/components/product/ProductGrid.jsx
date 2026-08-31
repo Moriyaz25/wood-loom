@@ -5,10 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProductCard from "./ProductCard";
 import WoodRingDivider from "@/components/ui/WoodRingDivider";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function ProductGrid({ products, title, description }) {
+export default function ProductGrid({ products, title, description, totalCount = products.length, viewAllHref = "/products" }) {
   const gridRef = useRef(null);
 
   useEffect(() => {
@@ -66,6 +67,16 @@ export default function ProductGrid({ products, title, description }) {
         <p className="py-12 text-center font-body text-sm text-walnut/50">
           No pieces here yet — check back soon.
         </p>
+      )}
+      {totalCount > products.length && (
+        <div className="mt-10 flex flex-col items-center gap-3 border-t border-walnut/10 pt-8 text-center">
+          <p className="font-body text-xs text-walnut/50">
+            {totalCount - products.length} more handcrafted {totalCount - products.length === 1 ? "piece" : "pieces"} in the collection
+          </p>
+          <Link href={viewAllHref} className="focus-ring inline-flex items-center gap-3 rounded-full border border-walnut/20 bg-white px-7 py-3 font-body text-xs font-semibold uppercase tracking-[.14em] text-walnut transition hover:border-walnut hover:bg-walnut hover:text-white">
+            View all products <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       )}
     </section>
   );

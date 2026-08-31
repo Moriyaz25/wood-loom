@@ -110,8 +110,7 @@ export default async function ProductDetailPage({ params }) {
             )}
           </div>
           <p className="mt-2 font-body text-xs text-walnut/55">
-            Shipping charge: ₹{product.shippingFee.toLocaleString("en-IN")} per
-            item
+            Shipping charges are calculated at checkout.
           </p>
           <p className="mt-5 font-body text-[15px] leading-7 text-walnut/70">
             {product.description}

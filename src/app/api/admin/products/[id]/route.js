@@ -11,12 +11,28 @@ export async function PATCH(request, { params }) {
   const body = await request.json();
   const parsed = productPatchSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
-  // Partial update: lets the admin panel flip isPromoted/isFeatured/stock/price
-  // independently without resending the whole product payload.
-  const product = await db.product.update({
-    where: { id },
-    data: parsed.data,
-    include: { images: true }
+  const { images, ...data } = parsed.data;
+  const product = await db.$transaction(async (tx) => {
+    if (images) {
+      await tx.productImage.deleteMany({ where: { productId: id } });
+    }
+    return tx.product.update({
+      where: { id },
+      data: {
+        ...data,
+        ...(images
+          ? {
+              images: {
+                create: images.map((image, position) => ({
+                  ...image,
+                  position,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: { images: { orderBy: { position: "asc" } }, category: true },
+    });
   });
 
   return NextResponse.json({ product });

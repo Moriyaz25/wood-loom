@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import ImageUploader from "@/components/admin/ImageUploader";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 const blank = { name: "", slug: "", description: "", image: "" };
 export default function CategoriesPage() {
+  const confirmAction = useConfirmDialog();
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(blank);
   const [editing, setEditing] = useState(null);
@@ -60,7 +62,15 @@ export default function CategoriesPage() {
     });
   }
   async function remove(c) {
-    if (!confirm(`Delete ${c.name}?`)) return;
+    const confirmed = await confirmAction({
+      eyebrow: "Category removal",
+      title: `Delete ${c.name}?`,
+      description: "This category will be removed from catalog navigation and product filters.",
+      note: c._count.products ? `${c._count.products} product${c._count.products === 1 ? " is" : "s are"} currently assigned to it. Reassign them before deleting.` : "No products are currently assigned to this category.",
+      confirmLabel: "Delete category",
+      cancelLabel: "Keep category",
+    });
+    if (!confirmed) return;
     const r = await fetch(`/api/admin/categories/${c.id}`, {
       method: "DELETE",
     });

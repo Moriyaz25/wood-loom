@@ -22,6 +22,17 @@ body {
   background-image: theme("backgroundImage.grain");
 }
 
+input,
+textarea,
+select {
+  color: #21150f;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(74, 40, 22, 0.48);
+}
+
 ::selection {
   background: #b5652d;
   color: #fffaf2;

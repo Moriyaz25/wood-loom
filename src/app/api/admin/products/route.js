@@ -8,6 +8,7 @@ export async function GET(request) {
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const products = await db.product.findMany({
+    where: { status: { not: "ARCHIVED" } },
     include: { images: true, category: true },
     orderBy: { createdAt: "desc" }
   });

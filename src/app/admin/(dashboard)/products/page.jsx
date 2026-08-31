@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import BulkUploadPanel from "@/components/admin/BulkUploadPanel";
 import ProductMediaUploader from "@/components/admin/ProductMediaUploader";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 const emptyForm = {
   name: "",
@@ -22,10 +23,12 @@ const emptyForm = {
 };
 
 export default function AdminProductsPage() {
+  const confirmAction = useConfirmDialog();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -49,6 +52,36 @@ export default function AdminProductsPage() {
 
   function updateField(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  function closeForm() {
+    setForm(emptyForm);
+    setEditingId(null);
+    setShowForm(false);
+    setError(null);
+  }
+
+  function editProduct(product) {
+    setForm({
+      name: product.name,
+      slug: product.slug,
+      shortDesc: product.shortDesc,
+      description: product.description,
+      price: String(product.price),
+      compareAtPrice: product.compareAtPrice ? String(product.compareAtPrice) : "",
+      stock: String(product.stock),
+      shippingFee: String(product.shippingFee ?? 0),
+      sku: product.sku,
+      materials: product.materials || "",
+      dimensions: product.dimensions || "",
+      careInstructions: product.careInstructions || "",
+      categoryId: product.categoryId,
+      media: (product.images || []).map(({ url, altText, mediaType }) => ({ url, altText, mediaType })),
+    });
+    setEditingId(product.id);
+    setShowForm(true);
+    setError(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function togglePromoted(product) {
@@ -78,9 +111,25 @@ export default function AdminProductsPage() {
   }
 
   async function deleteProduct(id) {
-    if (!confirm("Delete this product permanently?")) return;
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    const product = products.find((item) => item.id === id);
+    const confirmed = await confirmAction({
+      eyebrow: "Product visibility",
+      title: `Remove ${product?.name || "this product"}?`,
+      description: "It will disappear from the storefront and customers will no longer be able to purchase it.",
+      note: "Existing order history will remain safely preserved.",
+      confirmLabel: "Remove product",
+      cancelLabel: "Keep product",
+    });
+    if (!confirmed) return;
+    setError(null);
+    const previous = products;
+    setProducts((current) => current.filter((product) => product.id !== id));
+    const response = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setProducts(previous);
+      setError(data.error || "Product could not be removed. Please try again.");
+    }
   }
 
   async function handleSubmit(e) {
@@ -105,8 +154,8 @@ export default function AdminProductsPage() {
       images: form.media.length ? form.media : [{ url: "/textures/placeholder-product.svg", mediaType: "IMAGE" }],
     };
 
-    const res = await fetch("/api/admin/products", {
-      method: "POST",
+    const res = await fetch(editingId ? `/api/admin/products/${editingId}` : "/api/admin/products", {
+      method: editingId ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
@@ -118,8 +167,7 @@ export default function AdminProductsPage() {
       return;
     }
 
-    setForm(emptyForm);
-    setShowForm(false);
+    closeForm();
     setSaving(false);
     loadProducts();
   }
@@ -127,10 +175,10 @@ export default function AdminProductsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl text-walnut">Products</h1>
+        <div><p className="font-data text-[10px] font-semibold uppercase tracking-[.2em] text-[#c55f1d]">Catalog management</p><h1 className="mt-1 font-display text-4xl text-[#21150f]">Products</h1></div>
         <button
-          onClick={() => setShowForm((s) => !s)}
-          className="focus-ring rounded-full bg-sienna px-4 py-2 font-body text-sm text-ivory shadow-carve"
+          onClick={() => (showForm ? closeForm() : setShowForm(true))}
+          className="focus-ring rounded-full bg-[#d46b25] px-5 py-3 font-body text-sm font-semibold text-white shadow-[0_10px_24px_rgba(212,107,37,.3)] transition hover:bg-[#b95016]"
         >
           {showForm ? "Cancel" : "+ Add product"}
         </button>
@@ -141,8 +189,15 @@ export default function AdminProductsPage() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="card-notch-sm mt-6 space-y-3 bg-ivory p-6 shadow-carve"
+          className="mt-6 space-y-4 rounded-2xl border-2 border-[#d46b25]/25 bg-[#fffaf4] p-6 shadow-[0_18px_45px_rgba(42,27,18,.14)]"
         >
+          <div className="flex items-start justify-between gap-4 border-b border-walnut/10 pb-4">
+            <div>
+              <p className="font-data text-[10px] uppercase tracking-[.18em] text-sienna">{editingId ? "Edit catalog item" : "New catalog item"}</p>
+              <h2 className="mt-1 font-display text-3xl text-walnut">{editingId ? `Editing ${form.name}` : "Add a new product"}</h2>
+            </div>
+            {editingId && <span className="rounded-full bg-sage/15 px-3 py-1 font-body text-xs font-semibold text-sage-dark">Editing</span>}
+          </div>
           {categories.length === 0 && (
             <p className="font-body text-xs text-walnut/50">
               No categories yet — create one directly in the database (Prisma
@@ -257,25 +312,26 @@ export default function AdminProductsPage() {
             disabled={saving}
             className="focus-ring rounded-full bg-walnut px-5 py-2 font-body text-sm text-ivory shadow-carve disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save product"}
+            {saving ? "Saving..." : editingId ? "Save changes" : "Save product"}
           </button>
         </form>
       )}
 
-      <div className="mt-8 space-y-2">
+      <div className="mt-8 space-y-3">
         {products.map((product) => (
           <div
             key={product.id}
-            className="card-notch-sm flex flex-wrap items-center justify-between gap-3 bg-ivory p-4 shadow-carve"
+            className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#2a1b12]/15 border-l-4 border-l-[#d46b25] bg-white p-5 shadow-[0_10px_28px_rgba(42,27,18,.1)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(42,27,18,.16)]"
           >
             <div>
-              <p className="font-body text-sm text-walnut">{product.name}</p>
-              <p className="font-data text-xs text-walnut/50">
+              <p className="font-body text-base font-semibold text-[#21150f]">{product.name}</p>
+              <p className="mt-1 font-data text-xs font-medium text-[#765344]">
                 ₹{product.price} · shipping ₹{product.shippingFee} per unit ·
                 stock {product.stock} · {product.category.name}
               </p>
             </div>
             <div className="flex w-full flex-wrap items-center gap-2 font-body text-xs sm:w-auto sm:gap-4">
+              <button onClick={() => editProduct(product)} className="focus-ring rounded-full bg-[#21150f] px-4 py-2 font-semibold text-white transition hover:bg-[#d46b25]">Edit product</button>
               <PriceEditor product={product} onSaved={loadProducts} />
               <ShippingEditor product={product} onSaved={loadProducts} />
               <ToggleChip
@@ -290,9 +346,9 @@ export default function AdminProductsPage() {
               />
               <button
                 onClick={() => deleteProduct(product.id)}
-                className="focus-ring text-sienna hover:underline"
+                className="focus-ring rounded-full border border-red-200 px-3 py-2 font-semibold text-red-700 transition hover:bg-red-700 hover:text-white"
               >
-                Delete
+                Remove
               </button>
             </div>
           </div>
@@ -308,13 +364,13 @@ export default function AdminProductsPage() {
 function Field({ label, value, onChange, type = "text", required }) {
   return (
     <label className="block">
-      <span className="font-body text-xs text-walnut/60">{label}</span>
+      <span className="font-body text-xs font-semibold text-[#513326]">{label}</span>
       <input
         type={type}
         value={value}
         required={required}
         onChange={(e) => onChange(e.target.value)}
-        className="focus-ring mt-1 w-full rounded-lg border border-walnut/15 bg-ivory px-3 py-2 font-body text-sm shadow-carve-inset"
+        className="focus-ring mt-1 w-full rounded-lg border border-[#513326]/25 bg-white px-3 py-2.5 font-body text-sm text-[#21150f] shadow-sm"
       />
     </label>
   );
@@ -352,10 +408,10 @@ function PriceEditor({ product, onSaved }) {
 
   return (
     <div>
-      <div className="flex items-center gap-1 rounded-full border border-walnut/15 bg-white px-2 py-1">
-        <span className="text-walnut/50">Price ₹</span>
+      <div className="flex items-center gap-1 rounded-full border border-[#513326]/25 bg-[#fff8f1] px-2 py-1">
+        <span className="font-medium text-[#765344]">Price ₹</span>
         <input min="1" step="1" inputMode="numeric" type="number" value={value} onChange={(event) => { setValue(event.target.value); setMessage(""); }} className="w-20 bg-transparent text-right outline-none" aria-label={`Price for ${product.name}`} />
-        <button type="button" onClick={save} disabled={saving || value === String(product.price)} className="rounded-full bg-walnut px-2 py-1 text-ivory disabled:opacity-40">{saving ? "…" : "Save"}</button>
+        <button type="button" onClick={save} disabled={saving || value === String(product.price)} className="rounded-full bg-[#6b351c] px-2.5 py-1 font-semibold text-white disabled:bg-[#d7c7bc]">{saving ? "…" : "Save"}</button>
       </div>
       {message && <p className={`mt-1 text-[10px] ${message === "Saved" ? "text-green-700" : "text-red-600"}`}>{message}</p>}
     </div>
@@ -376,8 +432,8 @@ function ShippingEditor({ product, onSaved }) {
     if (response.ok) onSaved();
   }
   return (
-    <div className="flex items-center gap-1 rounded-full border border-walnut/15 bg-white px-2 py-1">
-      <span className="text-walnut/50">Shipping ₹</span>
+    <div className="flex items-center gap-1 rounded-full border border-[#513326]/25 bg-[#fff8f1] px-2 py-1">
+      <span className="font-medium text-[#765344]">Shipping ₹</span>
       <input
         min="0"
         type="number"
@@ -390,7 +446,7 @@ function ShippingEditor({ product, onSaved }) {
         type="button"
         onClick={save}
         disabled={saving}
-        className="rounded-full bg-walnut px-2 py-1 text-ivory disabled:opacity-50"
+        className="rounded-full bg-[#6b351c] px-2.5 py-1 font-semibold text-white disabled:opacity-50"
       >
         {saving ? "…" : "Save"}
       </button>
@@ -403,7 +459,7 @@ function ToggleChip({ active, onClick, label }) {
     <button
       onClick={onClick}
       className={`focus-ring rounded-full px-3 py-1 transition-colors ${
-        active ? "bg-sage text-ivory" : "bg-sand text-walnut/60"
+        active ? "bg-[#087f5b] font-semibold text-white shadow-sm" : "border border-[#a96b42]/35 bg-[#fff4e8] font-semibold text-[#9a4d1d]"
       }`}
     >
       {label}

@@ -40,7 +40,7 @@ export default function Header() {
         </span>
         <span className="hidden sm:inline">
           Handcrafted in India <span className="mx-3 opacity-35">-</span>
-          Worldwide shipping <span className="mx-3 opacity-35">-</span>
+          Shipping across India <span className="mx-3 opacity-35">-</span>
           Small-batch making
         </span>
       </div>

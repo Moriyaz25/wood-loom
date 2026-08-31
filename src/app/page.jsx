@@ -25,7 +25,7 @@ async function getData() {
       db.product.findMany({
         where: { status: "ACTIVE", isFeatured: true },
         include: { images: true, category: true },
-        take: 8,
+        take: 24,
         orderBy: { createdAt: "desc" },
       }),
       db.category.findMany({
@@ -52,6 +52,10 @@ async function getData() {
 
 export default async function HomePage() {
   const { banners, featured, categories, homeContent } = await getData();
+  const rotatingFeatured = rotateDaily(featured);
+  const spotlightProduct = rotatingFeatured[0];
+  const gridProducts = rotatingFeatured.slice(1, 5);
+  const lifestyleImages = uniqueLifestyleImages(homeContent.ugc.images);
 
   return (
     <div>
@@ -135,13 +139,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white">
-        <ProductGrid
-          products={featured}
-          title={homeContent.topPicks.title}
-          description={homeContent.topPicks.description}
-        />
-      </section>
+      {gridProducts.length > 0 && (
+        <section className="bg-white">
+          <ProductGrid
+            products={gridProducts}
+            title={homeContent.topPicks.title}
+            description={homeContent.topPicks.description}
+            totalCount={Math.max(0, featured.length - 1)}
+            viewAllHref="/products?featured=1"
+          />
+        </section>
+      )}
+
+      {spotlightProduct && <CraftSpotlight product={spotlightProduct} />}
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <Heading
@@ -292,8 +302,8 @@ export default async function HomePage() {
             {homeContent.ugc.handle}
           </p>
         </div>
-        <div className="mt-9 grid grid-cols-2 gap-3 md:grid-cols-6">
-          {homeContent.ugc.images.map((src, index) => (
+        <div className="mt-9 grid grid-cols-2 gap-3 md:grid-cols-4">
+          {lifestyleImages.map((src, index) => (
             <div
               key={`${src}-${index}`}
               className="relative aspect-[4/5] overflow-hidden bg-sand md:odd:mt-8"
@@ -313,6 +323,30 @@ export default async function HomePage() {
   );
 }
 
+function rotateDaily(products) {
+  if (products.length < 2) return products;
+  const startOfYear = Date.UTC(new Date().getUTCFullYear(), 0, 1);
+  const day = Math.floor((Date.now() - startOfYear) / 86400000);
+  const offset = day % products.length;
+  return [...products.slice(offset), ...products.slice(0, offset)];
+}
+
+function uniqueLifestyleImages(images = []) {
+  const repaired = images.map((src) =>
+    src === "/images/collection-collage-v1.png"
+      ? "/images/woodloom-collection-collage-v1.png"
+      : src,
+  );
+  return [
+    ...new Set(
+      repaired.filter(
+        (src) =>
+          src && !src.includes("woodloom-collection-collage-v1.png"),
+      ),
+    ),
+  ];
+}
+
 function Heading({ eyebrow, title }) {
   return (
     <div>
@@ -323,6 +357,84 @@ function Heading({ eyebrow, title }) {
         {title}
       </h2>
     </div>
+  );
+}
+
+function CraftSpotlight({ product }) {
+  const image =
+    product.images?.find((item) => item.mediaType !== "VIDEO")?.url ||
+    "/textures/placeholder-product.svg";
+  const detail =
+    product.materials ||
+    "Made in a considered small batch, with natural grain left visible.";
+
+  return (
+    <section className="overflow-hidden bg-[#d8c8b4]">
+      <div className="mx-auto grid max-w-[1500px] lg:grid-cols-[1.08fr_.92fr]">
+        <Link
+          href={`/products/${product.slug}`}
+          className="group relative min-h-[440px] overflow-hidden sm:min-h-[560px] lg:min-h-[700px]"
+        >
+          <Image
+            src={image}
+            alt={product.images?.[0]?.altText || product.name}
+            fill
+            sizes="(max-width: 1024px) 100vw, 58vw"
+            className="object-cover transition duration-700 group-hover:scale-[1.025]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+          <span className="absolute bottom-6 left-6 rounded-full border border-white/30 bg-black/15 px-4 py-2 font-body text-[10px] font-semibold uppercase tracking-[.16em] text-white backdrop-blur-md sm:bottom-8 sm:left-8">
+            View the piece →
+          </span>
+        </Link>
+        <div className="flex items-center px-6 py-14 sm:px-12 lg:px-16 lg:py-20">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-4">
+              <span className="font-data text-xs uppercase tracking-[.22em] text-sienna-dark">
+                Object of the season
+              </span>
+              <span className="h-px flex-1 bg-walnut/20" />
+            </div>
+            <p className="mt-9 font-body text-xs font-semibold uppercase tracking-[.18em] text-walnut/55">
+              {product.category?.name || "The current edit"}
+            </p>
+            <h2 className="mt-3 font-display text-5xl leading-[.92] text-walnut sm:text-6xl lg:text-7xl">
+              {product.name}
+            </h2>
+            <p className="mt-6 max-w-md font-body text-sm leading-7 text-walnut/65">
+              {product.shortDesc}
+            </p>
+            <div className="mt-8 grid grid-cols-2 border-y border-walnut/15 py-5 font-body text-xs">
+              <div>
+                <p className="uppercase tracking-[.14em] text-walnut/40">Material</p>
+                <p className="mt-2 leading-5 text-walnut">{detail}</p>
+              </div>
+              <div className="border-l border-walnut/15 pl-5">
+                <p className="uppercase tracking-[.14em] text-walnut/40">Availability</p>
+                <p className="mt-2 text-walnut">
+                  {product.stock > 0
+                    ? product.stock <= 3
+                      ? `Only ${product.stock} remaining`
+                      : "Available now"
+                    : "Currently unavailable"}
+                </p>
+              </div>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href={`/products/${product.slug}`}
+                className="rounded-full bg-walnut-dark px-7 py-3.5 font-body text-xs font-semibold uppercase tracking-[.14em] text-white transition hover:bg-sienna-dark"
+              >
+                Discover this piece
+              </Link>
+              <span className="font-display text-2xl text-walnut">
+                ₹{product.price.toLocaleString("en-IN")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

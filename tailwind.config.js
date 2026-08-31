@@ -5,26 +5,26 @@ module.exports = {
     extend: {
       colors: {
         walnut: {
-          DEFAULT: "#6B4226",
-          light: "#8A6042",
-          dark: "#2A1B12",
+          DEFAULT: "#4A2816",
+          light: "#754226",
+          dark: "#1F120C",
         },
         sand: {
-          DEFAULT: "#DED5C9",
-          light: "#F7F3EC",
-          dark: "#CBBEAE",
+          DEFAULT: "#D9C8B5",
+          light: "#F5EDE3",
+          dark: "#BFA993",
         },
         sienna: {
-          DEFAULT: "#B5652D",
-          light: "#C97A3E",
-          dark: "#8A4A22",
+          DEFAULT: "#C85D18",
+          light: "#EB7B32",
+          dark: "#963D0A",
         },
         sage: {
-          DEFAULT: "#7C8B6F",
-          light: "#93A184",
-          dark: "#5E6B53",
+          DEFAULT: "#267A59",
+          light: "#3F9874",
+          dark: "#14563D",
         },
-        ivory: "#FFFFFF",
+        ivory: "#FFFCF8",
       },
       fontFamily: {
         display: ["var(--font-display)", "serif"],

@@ -2,8 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductCard from "@/components/product/ProductCard";
+import { useConfirmDialog } from "@/components/ui/ConfirmDialogProvider";
 
 export default function AccountPage() {
+  const confirmAction = useConfirmDialog();
   const router = useRouter();
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("orders");
@@ -23,12 +25,15 @@ export default function AccountPage() {
     router.refresh();
   }
   async function removeAccount() {
-    if (
-      !confirm(
-        "Delete your profile and saved addresses? Order records will be anonymised and retained only for legal/accounting needs.",
-      )
-    )
-      return;
+    const confirmed = await confirmAction({
+      eyebrow: "Privacy & data",
+      title: "Delete your WOODLOOM account?",
+      description: "Your profile, saved addresses and wishlist will be permanently removed.",
+      note: "Historic order records will be anonymised and retained only where legally required.",
+      confirmLabel: "Delete my account",
+      cancelLabel: "Keep my account",
+    });
+    if (!confirmed) return;
     await fetch("/api/account", { method: "DELETE" });
     router.push("/");
     router.refresh();

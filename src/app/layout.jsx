@@ -6,6 +6,7 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
 import WhatsAppWidget from "@/components/contact/WhatsAppWidget";
+import { ConfirmDialogProvider } from "@/components/ui/ConfirmDialogProvider";
 
 const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
@@ -60,12 +61,14 @@ export default function RootLayout({ children }) {
     >
       <body className="font-body">
         <SmoothScrollProvider>
-          <Header />
-          <main className="min-h-[60vh] pb-24 md:pb-0">{children}</main>
-          <Footer />
-          <MobileBottomNav />
-          <CartDrawer />
-          <WhatsAppWidget />
+          <ConfirmDialogProvider>
+            <Header />
+            <main className="min-h-[60vh] pb-24 md:pb-0">{children}</main>
+            <Footer />
+            <MobileBottomNav />
+            <CartDrawer />
+            <WhatsAppWidget />
+          </ConfirmDialogProvider>
         </SmoothScrollProvider>
       </body>
     </html>
