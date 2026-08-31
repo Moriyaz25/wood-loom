@@ -53,8 +53,8 @@ async function getData() {
 export default async function HomePage() {
   const { banners, featured, categories, homeContent } = await getData();
   const rotatingFeatured = rotateDaily(featured);
-  const spotlightProduct = rotatingFeatured[0];
-  const gridProducts = rotatingFeatured.slice(1, 5);
+  const gridProducts = rotatingFeatured.slice(0, 4);
+  const spotlightProduct = rotatingFeatured.length > 4 ? rotatingFeatured[4] : null;
   const lifestyleImages = uniqueLifestyleImages(homeContent.ugc.images);
 
   return (
@@ -145,7 +145,7 @@ export default async function HomePage() {
             products={gridProducts}
             title={homeContent.topPicks.title}
             description={homeContent.topPicks.description}
-            totalCount={Math.max(0, featured.length - 1)}
+            totalCount={featured.length}
             viewAllHref="/products?featured=1"
           />
         </section>

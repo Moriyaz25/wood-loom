@@ -20,32 +20,32 @@ body {
   background-color: theme("colors.sand.light");
   color: #1c1814;
   background-image:
-    linear-gradient(rgba(245, 237, 227, 0.82), rgba(245, 237, 227, 0.82)),
+    linear-gradient(rgba(245, 232, 216, 0.72), rgba(245, 232, 216, 0.72)),
     url("/textures/wood-grain.svg"), theme("backgroundImage.grain");
   background-size: auto, 760px 260px, 200px 200px;
 }
 
 .wood-surface {
-  background-color: #f5ede3;
+  background-color: #f2dfc8;
   background-image:
-    linear-gradient(rgba(255, 250, 244, 0.78), rgba(255, 250, 244, 0.78)),
+    linear-gradient(rgba(247, 232, 214, 0.7), rgba(247, 232, 214, 0.7)),
     url("/textures/wood-grain.svg"), url("/textures/grain.svg");
   background-size: auto, 720px 240px, 200px 200px;
   background-position: center, center top, center;
 }
 
 .wood-surface-rich {
-  background-color: #ead8c4;
+  background-color: #f2dfc8;
   background-image:
-    linear-gradient(rgba(234, 216, 196, 0.58), rgba(234, 216, 196, 0.58)),
+    linear-gradient(rgba(247, 232, 214, 0.7), rgba(247, 232, 214, 0.7)),
     url("/textures/wood-grain.svg"), url("/textures/grain.svg");
   background-size: auto, 640px 220px, 200px 200px;
 }
 
 .wood-panel {
-  background-color: rgba(255, 252, 248, 0.94);
+  background-color: rgba(247, 232, 214, 0.94);
   background-image:
-    linear-gradient(rgba(255, 252, 248, 0.91), rgba(255, 252, 248, 0.91)),
+    linear-gradient(rgba(247, 232, 214, 0.82), rgba(247, 232, 214, 0.82)),
     url("/textures/wood-grain.svg");
   background-size: auto, 620px 210px;
 }
